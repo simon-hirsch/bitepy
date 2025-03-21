@@ -117,8 +117,18 @@ jobs:
         python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
       fail-fast: false
     steps:
+      - name: Set up SSH access for private submodules
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+        shell: bash
+
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive  # Ensures submodules are cloned too
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
