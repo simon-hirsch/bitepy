@@ -1,0 +1,12 @@
+site_name: "BITE Documentation"
+site_url: "https://dschaurecker.github.io/bite/"
+
+nav:
+  - Home: index.md
+  - About: about.md
+
+theme:
+  name: material
+
+plugins:
+  - search
