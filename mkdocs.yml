@@ -10,3 +10,8 @@ theme:
 
 plugins:
   - search
+  - mkdocstrings
+  - exclude:
+      glob:
+        - "bite/cpp-source-submodule/*"
+        - "bite/_bite.cpp"
