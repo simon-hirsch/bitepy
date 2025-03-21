@@ -31,7 +31,7 @@ A Python high-frequency intraday trading engine for simulating the rolling intri
 
 ## Installation
 
-Bite requires Python 3.7+ to run.
+Bite requires Python 3.8+ to run.
 The package can be easily installed via
 
 ```sh
