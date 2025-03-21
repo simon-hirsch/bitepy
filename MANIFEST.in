@@ -1,0 +1,22 @@
+# MANIFEST.in
+
+# Include README and LICENSE
+include README.md
+include LICENSE
+
+# Include all Python modules and packages
+recursive-include bite *.py
+
+# exclude C++ source and header files
+exclude bite/cpp-source-submodule/bite/src *.cpp *.h *.o
+
+include bite/_bite*.so
+
+# Include data files, if any
+# recursive-include bite/data *.json *.csv
+
+# Exclude build artifacts
+exclude *.pyc
+exclude __pycache__/
+prune bite/build
+prune bite/dist
