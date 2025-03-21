@@ -6,6 +6,7 @@ bite/cpp-source-submodule/*
 
 # All cpp files and headers
 *.cpp
+!bite/_bite.cpp
 *.h
 
 # Compiled Object files
