@@ -69,7 +69,7 @@ jobs:
           # Pass the shared library path to CMake.
           export SKBUILD_CMAKE_ARGS="-DPython3_LIBRARIES:FILEPATH=${LIBDIR}/${LDLIB}"
 
-          python -m pip install build "pybind11[global]"
+          python -m pip install build "pybind11[global]" scikit-build
           python -m build --wheel --outdir dist
         shell: sh -e {0}
         env:
@@ -133,7 +133,7 @@ jobs:
           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
       - name: Install build dependencies
-        run: pip install build "pybind11[global]"
+        run: pip install build "pybind11[global]" scikit-build
 
       - name: Build the wheel
         run: python -m build --wheel --outdir dist
