@@ -11,101 +11,101 @@ on:
   
 
 jobs:
-  build_manylinux:
-    name: Build Manylinux Wheels (Linux)
-    runs-on: ubuntu-latest
-    # Use the manylinux container to produce manylinux-compliant wheels.
-    container:
-      image: quay.io/pypa/manylinux_2_28_x86_64
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+  # build_manylinux:
+  #   name: Build Manylinux Wheels (Linux)
+  #   runs-on: ubuntu-latest
+  #   # Use the manylinux container to produce manylinux-compliant wheels.
+  #   container:
+  #     image: quay.io/pypa/manylinux_2_28_x86_64
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4
 
-      - name: Install Python development libraries
-        run: |
-          # Adjust the package name according to the Python version.
-          # For example, for Python 3.9:
-          # if [ "${{ matrix.python-version }}" = "3.9" ]; then
-          #     yum install -y python39-devel
-          # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
-          #     yum install -y python38-devel
-          # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
-          #     yum install -y python3.10-devel
-          # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
-          #     yum install -y python3.11-devel
-          # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
-          #     yum install -y python3.12-devel
-          # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
-          #     yum install -y python3.13-devel
-          # fi
-          yum install -y python3-devel
+  #     - name: Install Python development libraries
+  #       run: |
+  #         # Adjust the package name according to the Python version.
+  #         # For example, for Python 3.9:
+  #         # if [ "${{ matrix.python-version }}" = "3.9" ]; then
+  #         #     yum install -y python39-devel
+  #         # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
+  #         #     yum install -y python38-devel
+  #         # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
+  #         #     yum install -y python3.10-devel
+  #         # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
+  #         #     yum install -y python3.11-devel
+  #         # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
+  #         #     yum install -y python3.12-devel
+  #         # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
+  #         #     yum install -y python3.13-devel
+  #         # fi
+  #         yum install -y python3-devel
 
-      - name: Set up and install dependencies
-        run: |
-          # Remove dots to get a version string like "310" for Python 3.10
-          ver_no_dot=$(echo "${{ matrix.python-version }}" | tr -d '.')
-          # Prepend the manylinux Python directory to PATH.
-          export PATH="/opt/python/cp${ver_no_dot}-cp${ver_no_dot}/bin:$PATH"
-          python --version
-          which python
+  #     - name: Set up and install dependencies
+  #       run: |
+  #         # Remove dots to get a version string like "310" for Python 3.10
+  #         ver_no_dot=$(echo "${{ matrix.python-version }}" | tr -d '.')
+  #         # Prepend the manylinux Python directory to PATH.
+  #         export PATH="/opt/python/cp${ver_no_dot}-cp${ver_no_dot}/bin:$PATH"
+  #         python --version
+  #         which python
 
-          # Compute the library directory and library filename using sysconfig.
-          LIBDIR=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-          LDLIB=$(python -c "import sysconfig; print(sysconfig.get_config_var('LDLIBRARY'))")
+  #         # Compute the library directory and library filename using sysconfig.
+  #         LIBDIR=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+  #         LDLIB=$(python -c "import sysconfig; print(sysconfig.get_config_var('LDLIBRARY'))")
 
-          # If the reported library is static (ends in .a), try to use the shared version.
-          if echo "$LDLIB" | grep -q '\.a$'; then
-            LDLIB_SHARED=$(echo "$LDLIB" | sed 's/\.a$/.so/')
-            if [ -f "${LIBDIR}/${LDLIB_SHARED}" ]; then
-              LDLIB="$LDLIB_SHARED"
-            fi
-          fi
+  #         # If the reported library is static (ends in .a), try to use the shared version.
+  #         if echo "$LDLIB" | grep -q '\.a$'; then
+  #           LDLIB_SHARED=$(echo "$LDLIB" | sed 's/\.a$/.so/')
+  #           if [ -f "${LIBDIR}/${LDLIB_SHARED}" ]; then
+  #             LDLIB="$LDLIB_SHARED"
+  #           fi
+  #         fi
 
-          echo "Using Python library: ${LIBDIR}/${LDLIB}"
+  #         echo "Using Python library: ${LIBDIR}/${LDLIB}"
 
-          # Pass the shared library path to CMake.
-          export SKBUILD_CMAKE_ARGS="-DPython3_LIBRARIES:FILEPATH=${LIBDIR}/${LDLIB}"
+  #         # Pass the shared library path to CMake.
+  #         export SKBUILD_CMAKE_ARGS="-DPython3_LIBRARIES:FILEPATH=${LIBDIR}/${LDLIB}"
 
-          python -m pip install build "pybind11[global]" scikit-build
-          python -m build --wheel --outdir dist
-        shell: sh -e {0}
-        env:
-          CXXFLAGS: -std=c++17
-          CMAKE_CXX_FLAGS: -std=c++17
-          CMAKE_CXX_STANDARD: 17
-          CMAKE_CXX_STANDARD_REQUIRED: ON
+  #         python -m pip install build "pybind11[global]" scikit-build
+  #         python -m build --wheel --outdir dist
+  #       shell: sh -e {0}
+  #       env:
+  #         CXXFLAGS: -std=c++17
+  #         CMAKE_CXX_FLAGS: -std=c++17
+  #         CMAKE_CXX_STANDARD: 17
+  #         CMAKE_CXX_STANDARD_REQUIRED: ON
           
 
-      # - name: Set C++17 Standard
-      #   run: |
-      #     echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
-      #     echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
-      #     echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
-      #     echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
+  #     # - name: Set C++17 Standard
+  #     #   run: |
+  #     #     echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
+  #     #     echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
+  #     #     echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
+  #     #     echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
-      # - name: Check Compiler Version
-      #   run: g++ --version
+  #     # - name: Check Compiler Version
+  #     #   run: g++ --version
 
-      # - name: Install build dependencies
-      #   run: pip install build "pybind11[global]"
+  #     # - name: Install build dependencies
+  #     #   run: pip install build "pybind11[global]"
 
-      # - name: Build the wheel
-      #   run: python -m build --wheel --outdir dist
+  #     # - name: Build the wheel
+  #     #   run: python -m build --wheel --outdir dist
 
-      - name: Repair the wheel with auditwheel
-        run: |
-          for whl in dist/*.whl; do
-            auditwheel repair "$whl" -w dist/
-          done
+  #     - name: Repair the wheel with auditwheel
+  #       run: |
+  #         for whl in dist/*.whl; do
+  #           auditwheel repair "$whl" -w dist/
+  #         done
 
-      - name: Upload wheels (Manylinux)
-        uses: actions/upload-artifact@v4
-        with:
-          name: manylinux-wheels-py${{ matrix.python-version }}
-          path: dist/*manylinux*.whl
+  #     - name: Upload wheels (Manylinux)
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: manylinux-wheels-py${{ matrix.python-version }}
+  #         path: dist/*manylinux*.whl
 
   build_native:
     name: Build Wheels (macOS & Windows)
@@ -113,8 +113,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        os: [macos-latest] #, windows-latest]
+        python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
       fail-fast: false
     steps:
       - name: Check out repository
@@ -133,7 +133,9 @@ jobs:
           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
       - name: Install build dependencies
-        run: pip install build "pybind11[global]" scikit-build
+        run: |
+          pip install build "pybind11[global]" scikit-build
+          python -c "import skbuild"
 
       - name: Build the wheel
         run: python -m build --wheel --outdir dist
