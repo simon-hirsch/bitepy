@@ -2,3 +2,7 @@
 	path = bite/cpp-source-submodule
 	url = git@github.com:dschaurecker/fc-bite-private.git
 	branch = dev
+[submodule "bite/cpp-source-submodule"]
+	path = bite/cpp-source-submodule
+	url = git@github.com:dschaurecker/fc-bite-private.git
+	branch = dev
