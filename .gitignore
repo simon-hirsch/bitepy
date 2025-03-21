@@ -1,3 +1,6 @@
+bite/cpp-source-submodule/*
+!bite/cpp-source-submodule/.git
+
 # Prerequisites
 *.d
 

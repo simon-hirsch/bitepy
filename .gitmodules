@@ -1,4 +1,4 @@
 [submodule "cpp-source-submodule"]
-	path = cpp-source-submodule
+	path = bite/cpp-source-submodule
 	url = git@github.com:dschaurecker/fc-bite-private.git
 	branch = dev
