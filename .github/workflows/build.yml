@@ -129,6 +129,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive  # Ensures submodules are cloned too
+          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
