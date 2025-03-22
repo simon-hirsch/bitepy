@@ -448,36 +448,22 @@ class Simulation:
         """
         Initialize a Simulation instance.
 
-        :param start_date: The start datetime of the simulation. Must be timezone aware.
-        :type start_date: pd.Timestamp
-        :param end_date: The end datetime of the simulation. Must be timezone aware.
-        :type end_date: pd.Timestamp
-        :param storage_max: The maximum storage capacity of the storage unit (MWh). Default is 10.0.
-        :type storage_max: float
-        :param lin_deg_cost: The linear degradation cost of the storage unit (€/MWh). Default is 4.0.
-        :type lin_deg_cost: float
-        :param loss_in: The injection efficiency of the storage unit (0-1]. Default is 0.95.
-        :type loss_in: float
-        :param loss_out: The withdrawal efficiency of the storage unit (0-1]. Default is 0.95.
-        :type loss_out: float
-        :param trading_fee: The trading fee for the exchange (€/MWh). Default is 0.09.
-        :type trading_fee: float
-        :param num_stor_states: The number of storage states for dynamic programming. Default is 11.
-        :type num_stor_states: int
-        :param tec_delay: The technical delay of the storage unit (ms, >= 0). Default is 0.
-        :type tec_delay: int
-        :param fixed_solve_time: The fixed solve time for the dynamic programming (ms, >= 0 or -1 for realistic solve times). Default is 0.
-        :type fixed_solve_time: int
-        :param solve_frequency: The frequency at which the dynamic programming solver is run (min). Default is 0.0.
-        :type solve_frequency: float
-        :param withdraw_max: The maximum withdrawal power of the storage unit (MW). Default is 10.0.
-        :type withdraw_max: float
-        :param inject_max: The maximum injection power of the storage unit (MW). Default is 10.0.
-        :type inject_max: float
-        :param forecast_horizon_start: The start of the forecast horizon (min). Default is 600.
-        :type forecast_horizon_start: int
-        :param forecast_horizon_end: The end of the forecast horizon (min). Default is 75.
-        :type forecast_horizon_end: int
+        Args:
+            start_date (pd.Timestamp): The start datetime of the simulation. Must be timezone aware.
+            end_date (pd.Timestamp): The end datetime of the simulation. Must be timezone aware.
+            storage_max (float, optional): The maximum storage capacity of the storage unit (MWh). Default is 10.0.
+            lin_deg_cost (float, optional): The linear degradation cost of the storage unit (€/MWh). Default is 4.0.
+            loss_in (float, optional): The injection efficiency of the storage unit (0-1]. Default is 0.95.
+            loss_out (float, optional): The withdrawal efficiency of the storage unit (0-1]. Default is 0.95.
+            trading_fee (float, optional): The trading fee for the exchange (€/MWh). Default is 0.09.
+            num_stor_states (int, optional): The number of storage states for dynamic programming. Default is 11.
+            tec_delay (int, optional): The technical delay of the storage unit (ms, >= 0). Default is 0.
+            fixed_solve_time (int, optional): The fixed solve time for dynamic programming (ms, >= 0 or -1 for realistic solve times). Default is 0.
+            solve_frequency (float, optional): The frequency at which the dynamic programming solver is run (min). Default is 0.0.
+            withdraw_max (float, optional): The maximum withdrawal power of the storage unit (MW). Default is 10.0.
+            inject_max (float, optional): The maximum injection power of the storage unit (MW). Default is 10.0.
+            forecast_horizon_start (int, optional): The start of the forecast horizon (min). Default is 600.
+            forecast_horizon_end (int, optional): The end of the forecast horizon (min). Default is 75.
         """
         # write all the assertions
         if start_date >= end_date:
@@ -528,7 +514,7 @@ class Simulation:
         self._sim_cpp.params.foreHorizonStart = forecast_horizon_start
         self._sim_cpp.params.foreHorizonEnd = forecast_horizon_end
 
-        # set start and end date
+        # Set start and end date
         if start_date >= end_date:
             raise ValueError("start_date must be before end_date")
         if start_date.tzinfo is None:
@@ -550,8 +536,8 @@ class Simulation:
         """
         Add an order binary file to the simulation's order queue.
 
-        :param bin_data: A string containing the path to the order binary file.
-        :type bin_data: str
+        Args:
+            bin_data (str): The path to the order binary file.
         """
         self._sim_cpp.addOrderQueueFromBin(bin_data)
     
@@ -559,16 +545,16 @@ class Simulation:
         """
         Add a DataFrame of orders to the simulation's order queue.
 
-        The DataFrame must contain the same columns as the saved CSV files with timestamps in UTC
+        The DataFrame must have the same columns as the saved CSV files, with timestamps in UTC
         (seconds and milliseconds).
 
-        :param df: A DataFrame containing the orders to be added.
-        :type df: pd.DataFrame
+        Args:
+            df (pd.DataFrame): A DataFrame containing the orders to be added.
 
-        Processing:
-          - Validate that the timestamp columns ('start', 'transaction', 'validity') are timezone aware.
-          - Ensure that all timestamps are in the same timezone.
-          - Convert all timestamps to UTC and format them in ISO 8601.
+        Processing Steps:
+            - Validate that the timestamp columns ('start', 'transaction', 'validity') are timezone aware.
+            - Ensure that all timestamps are in the same timezone.
+            - Convert all timestamps to UTC and format them in ISO 8601.
         """
         if (df["start"].dt.tz is None and df["transaction"].dt.tz is None and df["validity"].dt.tz is None):
             raise ValueError("All timestamps of input df must be timezone aware")
@@ -598,18 +584,18 @@ class Simulation:
         Add forecast data from a DataFrame to the simulation.
 
         The DataFrame must contain the following columns:
-          - creation_time: The time when the forecast was created (timezone aware, up to millisecond precision).
-          - delivery_start: The start time of the delivery period (timezone aware).
-          - sell_price: The price at which the optimization will try to sell (€/MWh).
-          - buy_price: The price at which the optimization will try to buy (€/MWh).
+            - creation_time: The time when the forecast was created (timezone aware, up to millisecond precision).
+            - delivery_start: The start time of the delivery period (timezone aware).
+            - sell_price: The price at which the optimization will try to sell (€/MWh).
+            - buy_price: The price at which the optimization will try to buy (€/MWh).
 
-        :param df: A DataFrame containing the forecast data.
-        :type df: pd.DataFrame
+        Args:
+            df (pd.DataFrame): A DataFrame containing the forecast data.
 
-        Processing:
-          - Validate that the 'creation_time' and 'delivery_start' columns are timezone aware and identical.
-          - Convert the timestamps to UTC and format them in ISO 8601.
-          - Pass the data to the simulation.
+        Processing Steps:
+            - Validate that the 'creation_time' and 'delivery_start' columns are timezone aware and identical.
+            - Convert the timestamps to UTC and format them in ISO 8601.
+            - Pass the data to the simulation.
         """
         if (df["creation_time"].dt.tz is None and df["delivery_start"].dt.tz is None):
             raise ValueError("All timestamps of input df must be timezone aware")
@@ -633,14 +619,13 @@ class Simulation:
         """
         Generate a list of file paths for binary order book data for each day within a date range.
 
-        :param base_path: The base directory path where the binary files are stored.
-        :type base_path: str
-        :param start_date: The start date of the range.
-        :type start_date: pd.Timestamp
-        :param end_date: The end date of the range.
-        :type end_date: pd.Timestamp
-        :return: A list of file paths for each day's binary order book file.
-        :rtype: list
+        Args:
+            base_path (str): The base directory path where the binary files are stored.
+            start_date (pd.Timestamp): The start date of the range.
+            end_date (pd.Timestamp): The end date of the range.
+
+        Returns:
+            list: A list of file paths for each day's binary order book file.
         """
         start_date_utc = start_date.tz_convert('UTC')
         end_date_utc = end_date.tz_convert('UTC')
@@ -661,19 +646,26 @@ class Simulation:
         """
         Execute the simulation using binary data files.
 
-        The files must be named in the format: orderbook_YYYY-MM-DD.bin.
+        The files must be named as: orderbook_YYYY-MM-DD.bin.
 
-        :param data_path: The path to the directory containing the binary data files.
-        :type data_path: str
-        :param verbose: If True, display progress logs to the console. Default is True.
-        :type verbose: bool
+        Args:
+            data_path (str): The directory containing the binary data files.
+            verbose (bool, optional): If True, display progress logs. Default is True.
 
-        Processing:
-          - Retrieve the list of binary file paths for the simulation period.
-          - Iterate through each day's data, add the file to the order queue, and run the simulation for that day.
+        Processing Steps:
+            - Retrieve the list of binary file paths for the simulation period.
+            - Iterate through each day's data, add the file to the order queue, and run the simulation for that day.
         """
-        start_date = pd.Timestamp(year=self._sim_cpp.params.startYear, month=self._sim_cpp.params.startMonth, day=self._sim_cpp.params.startDay, hour=self._sim_cpp.params.startHour, tz="UTC")
-        end_date = pd.Timestamp(year=self._sim_cpp.params.endYear, month=self._sim_cpp.params.endMonth, day=self._sim_cpp.params.endDay, hour=self._sim_cpp.params.endHour, tz="UTC")
+        start_date = pd.Timestamp(year=self._sim_cpp.params.startYear,
+                                  month=self._sim_cpp.params.startMonth,
+                                  day=self._sim_cpp.params.startDay,
+                                  hour=self._sim_cpp.params.startHour,
+                                  tz="UTC")
+        end_date = pd.Timestamp(year=self._sim_cpp.params.endYear,
+                                month=self._sim_cpp.params.endMonth,
+                                day=self._sim_cpp.params.endDay,
+                                hour=self._sim_cpp.params.endHour,
+                                tz="UTC")
         lob_paths = self.get_data_bins_for_each_day(data_path, start_date, end_date)
 
         num_days = len(lob_paths)
@@ -692,11 +684,11 @@ class Simulation:
         """
         Run the simulation for a single day.
 
-        :param is_last: If True, indicates this is the last iteration of data.
-        :type is_last: bool
+        Args:
+            is_last (bool): If True, indicates that this is the last iteration of data.
 
-        Processing:
-          - Execute the simulation with the provided day's data.
+        Processing Steps:
+            - Execute the simulation for the provided day's data.
         """
         self._sim_cpp.run(is_last)
 
@@ -704,15 +696,15 @@ class Simulation:
         """
         Retrieve the logs generated by the simulation.
 
-        :return: A dictionary containing simulation logs with the following keys:
-                 - decision_record: Final schedule of the simulation.
-                 - price_record: CID price data over the simulation duration.
-                 - accepted_orders: Limit orders accepted by the RI.
-                 - executed_orders: Orders sent to the exchange by the RI.
-                 - forecast_orders: Orders virtually traded against the forecast.
-                 - killed_orders: Orders that were missed at the exchange.
-                 - balancing_orders: Orders that would have incurred payments to the TSO.
-        :rtype: dict
+        Returns:
+            dict: A dictionary containing simulation logs with the following keys:
+                - decision_record: Final simulation schedule.
+                - price_record: CID price data over the simulation duration.
+                - accepted_orders: Limit orders accepted by the RI.
+                - executed_orders: Orders sent to the exchange by the RI.
+                - forecast_orders: Orders virtually traded against the forecast.
+                - killed_orders: Orders that were missed at the exchange.
+                - balancing_orders: Orders that would have incurred payments to the TSO.
         """
         decision_record, price_record, accepted_orders, executed_orders, forecast_orders, killed_orders, balancing_orders = self._sim_cpp.getLogs()
         decision_record = pd.DataFrame(decision_record)
@@ -795,19 +787,18 @@ class Simulation:
         """
         Retrieve volume-price pairs from the simulation.
 
-        :param is_last: If True, indicates this is the last iteration of data.
-        :type is_last: bool
-        :param frequency: The frequency (in seconds) at which price data is retrieved. For example, 1 means every second.
-        :type frequency: int
-        :param volumes: A 1D numpy array of volumes for which prices are returned.
-        :type volumes: np.ndarray
-        :return: A DataFrame with columns:
-                 - current_time: Time of the export (UTC).
-                 - delivery_hour: Delivery period time (UTC).
-                 - volume: The volume for which the price is exported (MWh).
-                 - price_full: The full price (cashflow) for the volume (€).
-                 - worst_accepted_price: Market price of the worst matched order (€/MWh).
-        :rtype: pd.DataFrame
+        Args:
+            is_last (bool): If True, indicates this is the last iteration of data.
+            frequency (int): The frequency (in seconds) at which price data is retrieved.
+            volumes (np.ndarray): A 1D numpy array of volumes for which prices are returned.
+
+        Returns:
+            pd.DataFrame: A DataFrame with columns:
+                - current_time: Time of the export (UTC).
+                - delivery_hour: Delivery period time (UTC).
+                - volume: The volume for which the price is exported (MWh).
+                - price_full: The full price (cashflow) for the volume (€).
+                - worst_accepted_price: Market price of the worst matched order (€/MWh).
         """
         if len(volumes.shape) != 1:
             raise ValueError("volumes must be a 1D numpy array")
