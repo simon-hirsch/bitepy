@@ -1,12 +1,21 @@
-site_name: "BITE Documentation"
+site_name: "BITE - Battery Intraday Trading Engine"
 site_url: "https://dschaurecker.github.io/bite/"
 
 nav:
   - Home: index.md
+  - Data Preprocessing: data.md
+  - Simulation: simulation.md
+  - Results Postprocessing: results.md
   - About: about.md
 
 theme:
   name: material
+  palette: 
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
 
 plugins:
   - search

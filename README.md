@@ -17,7 +17,7 @@ A Python high-frequency intraday trading engine for simulating the rolling intri
     - [Results Postprocessing](#sub-heading-3)
  4. [Tutorial](#tutorial)
  5. [License](#license)
- 6. [Author](#authro)
+ 6. [Author](#author)
 
 
 ## Features
@@ -52,7 +52,7 @@ We show and test this for German Market Data of the years 2020 and 2021, specifi
 Inputs to the parsing function simply are the `start-day` and `end-day` of the data we want to parse, plus the `path` to the zipped EPEX market data.
 
 #### Simulation
-The `Simulation` enables users to initialize simulation instances, set parameters, load the preprocessed LOB Data into the simulation, run the simulation, and return results.
+The `Simulation` class enables users to initialize simulation instances, set parameters, load the preprocessed LOB Data into the simulation, run the simulation, and return results.
 Conceptually, you first set the parameters of the simulation (battery, dynamic programming, and simulation settings), then decide which days of LOB data to feed, before subsequently running the simulation for the desired amount of time. Order book traversals and optimizations happen in C++, while pre-/post-processing and settings are done in Python. Results are returned as Pandas dataframes and can be fed into the post-processing described below.
 
 #### Results Postprocessing
