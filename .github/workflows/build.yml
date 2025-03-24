@@ -1,173 +1,173 @@
-# name: Build wheels across OS and Python versions
+name: Build wheels across OS and Python versions
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
-#   workflow_dispatch:  # to enable manual triggers
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # to enable manual triggers
   
 
-# jobs:
-#   build_manylinux:
-#     name: Build Manylinux Wheels (Linux)
-#     runs-on: ubuntu-latest
-#     container:
-#       image: quay.io/pypa/manylinux_2_28_x86_64
-#     strategy:
-#       matrix:
-#         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-#     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v4
-#         with:
-#           submodules: false
+jobs:
+  build_manylinux:
+    name: Build Manylinux Wheels (Linux)
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
 
-#       - name: Set up SSH access for private submodule
-#         run: |
-#           mkdir -p ~/.ssh
-#           echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
-#           chmod 600 ~/.ssh/id_ed25519
-#           ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Set up SSH access for private submodule
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
         
-#       - name: Initialize submodules
-#         run: |
-#           git submodule sync --recursive
-#           git submodule update --init --recursive
+      - name: Initialize submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
 
-#       - name: Install Python development libraries
-#         run: |
-#           # Adjust the package name according to the Python version.
-#           # For example, for Python 3.9:
-#           # if [ "${{ matrix.python-version }}" = "3.9" ]; then
-#           #     yum install -y python39-devel
-#           # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
-#           #     yum install -y python38-devel
-#           # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
-#           #     yum install -y python3.10-devel
-#           # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
-#           #     yum install -y python3.11-devel
-#           # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
-#           #     yum install -y python3.12-devel
-#           # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
-#           #     yum install -y python3.13-devel
-#           # fi
-#           yum install -y python3-devel
+      - name: Install Python development libraries
+        run: |
+          # Adjust the package name according to the Python version.
+          # For example, for Python 3.9:
+          # if [ "${{ matrix.python-version }}" = "3.9" ]; then
+          #     yum install -y python39-devel
+          # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
+          #     yum install -y python38-devel
+          # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
+          #     yum install -y python3.10-devel
+          # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
+          #     yum install -y python3.11-devel
+          # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
+          #     yum install -y python3.12-devel
+          # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
+          #     yum install -y python3.13-devel
+          # fi
+          yum install -y python3-devel
 
-#       - name: Set up and install dependencies
-#         run: |
-#           # Remove dots to get a version string like "310" for Python 3.10
-#           ver_no_dot=$(echo "${{ matrix.python-version }}" | tr -d '.')
-#           # Prepend the manylinux Python directory to PATH.
-#           export PATH="/opt/python/cp${ver_no_dot}-cp${ver_no_dot}/bin:$PATH"
-#           python --version
-#           which python
+      - name: Set up and install dependencies
+        run: |
+          # Remove dots to get a version string like "310" for Python 3.10
+          ver_no_dot=$(echo "${{ matrix.python-version }}" | tr -d '.')
+          # Prepend the manylinux Python directory to PATH.
+          export PATH="/opt/python/cp${ver_no_dot}-cp${ver_no_dot}/bin:$PATH"
+          python --version
+          which python
 
-#           # Compute the library directory and library filename using sysconfig.
-#           LIBDIR=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-#           LDLIB=$(python -c "import sysconfig; print(sysconfig.get_config_var('LDLIBRARY'))")
+          # Compute the library directory and library filename using sysconfig.
+          LIBDIR=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+          LDLIB=$(python -c "import sysconfig; print(sysconfig.get_config_var('LDLIBRARY'))")
 
-#           # If the reported library is static (ends in .a), try to use the shared version.
-#           if echo "$LDLIB" | grep -q '\.a$'; then
-#             LDLIB_SHARED=$(echo "$LDLIB" | sed 's/\.a$/.so/')
-#             if [ -f "${LIBDIR}/${LDLIB_SHARED}" ]; then
-#               LDLIB="$LDLIB_SHARED"
-#             fi
-#           fi
+          # If the reported library is static (ends in .a), try to use the shared version.
+          if echo "$LDLIB" | grep -q '\.a$'; then
+            LDLIB_SHARED=$(echo "$LDLIB" | sed 's/\.a$/.so/')
+            if [ -f "${LIBDIR}/${LDLIB_SHARED}" ]; then
+              LDLIB="$LDLIB_SHARED"
+            fi
+          fi
 
-#           echo "Using Python library: ${LIBDIR}/${LDLIB}"
+          echo "Using Python library: ${LIBDIR}/${LDLIB}"
 
-#           # Pass the shared library path to CMake.
-#           export SKBUILD_CMAKE_ARGS="-DPython3_LIBRARIES:FILEPATH=${LIBDIR}/${LDLIB}"
+          # Pass the shared library path to CMake.
+          export SKBUILD_CMAKE_ARGS="-DPython3_LIBRARIES:FILEPATH=${LIBDIR}/${LDLIB}"
 
-#           python -m pip install build "pybind11[global]" scikit-build
-#           python -m build --wheel --outdir dist
-#         shell: sh -e {0}
-#         env:
-#           CXXFLAGS: -std=c++17
-#           CMAKE_CXX_FLAGS: -std=c++17
-#           CMAKE_CXX_STANDARD: 17
-#           CMAKE_CXX_STANDARD_REQUIRED: ON
+          python -m pip install build "pybind11[global]" scikit-build
+          python -m build --wheel --outdir dist
+        shell: sh -e {0}
+        env:
+          CXXFLAGS: -std=c++17
+          CMAKE_CXX_FLAGS: -std=c++17
+          CMAKE_CXX_STANDARD: 17
+          CMAKE_CXX_STANDARD_REQUIRED: ON
           
 
-#       # - name: Set C++17 Standard
-#       #   run: |
-#       #     echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
-#       #     echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
-#       #     echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
-#       #     echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
+      # - name: Set C++17 Standard
+      #   run: |
+      #     echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
+      #     echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
+      #     echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
+      #     echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
-#       # - name: Check Compiler Version
-#       #   run: g++ --version
+      # - name: Check Compiler Version
+      #   run: g++ --version
 
-#       # - name: Install build dependencies
-#       #   run: pip install build "pybind11[global]"
+      # - name: Install build dependencies
+      #   run: pip install build "pybind11[global]"
 
-#       # - name: Build the wheel
-#       #   run: python -m build --wheel --outdir dist
+      # - name: Build the wheel
+      #   run: python -m build --wheel --outdir dist
 
-#       - name: Repair the wheel with auditwheel
-#         run: |
-#           for whl in dist/*.whl; do
-#             auditwheel repair "$whl" -w dist/
-#           done
+      - name: Repair the wheel with auditwheel
+        run: |
+          for whl in dist/*.whl; do
+            auditwheel repair "$whl" -w dist/
+          done
 
-#       - name: Upload wheels (Manylinux)
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: manylinux-wheels-py${{ matrix.python-version }}
-#           path: dist/*manylinux*.whl
+      - name: Upload wheels (Manylinux)
+        uses: actions/upload-artifact@v4
+        with:
+          name: manylinux-wheels-py${{ matrix.python-version }}
+          path: dist/*manylinux*.whl
 
-#   build_native:
-#     name: Build Wheels (macOS & Windows)
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       matrix:
-#         os: [macos-latest, windows-latest]
-#         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-#       fail-fast: false
-#     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v4
-#         with:
-#           submodules: false
+  build_native:
+    name: Build Wheels (macOS & Windows)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+      fail-fast: false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
         
-#       - name: Set up SSH access for private submodule
-#         run: |
-#           mkdir -p ~/.ssh
-#           echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
-#           chmod 600 ~/.ssh/id_ed25519
-#           ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Set up SSH access for private submodule
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
         
-#       - name: Initialize submodules
-#         run: |
-#           git submodule sync --recursive
-#           git submodule update --init --recursive
+      - name: Initialize submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
 
-#       - name: Set up Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-#       - name: Set C++17 Standard
-#         run: |
-#           echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
+      - name: Set C++17 Standard
+        run: |
+          echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
-#       - name: Install build dependencies
-#         run: |
-#           pip install build "pybind11[global]" scikit-build
-#           python -c "import skbuild"
+      - name: Install build dependencies
+        run: |
+          pip install build "pybind11[global]" scikit-build
+          python -c "import skbuild"
 
-#       - name: Build the wheel
-#         run: python -m build --wheel --outdir dist
+      - name: Build the wheel
+        run: python -m build --wheel --outdir dist
 
-#       - name: Upload wheels (Native)
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
-#           path: dist
+      - name: Upload wheels (Native)
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: dist
