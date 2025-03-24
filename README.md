@@ -9,18 +9,6 @@
 
 A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd) for details on the method and visualizations of the results.
 
-## Table of Contents
-
- 1. [Features](#Features)
- 2. [Installation](#subheading-2)
- 3. [Package](#sub-heading-3)
-    - [Data Preprocessing](#sub-heading-3)
-    - [Simulation](#sub-heading-3)
-    - [Results Postprocessing](#sub-heading-3)
- 4. [Tutorial](#tutorial)
- 5. [License](#license)
- 6. [Author](#author)
-
 
 ## Features
 
@@ -40,32 +28,13 @@ The package can be easily installed via
 pip install bite
 ```
 
+## Documentation and Tutorial
 
+Our [Documentation](https://dschaurecker.github.io/bite/) gives a detailed overview on our package's features and will be updated continuously. We also provide a simple [Tutorial](https://github.com/dschaurecker/bite/notebooks/package_tutorial.ipynb) in form of a Jupyter Notebook, guiding users through our simulation process.
 
+## Contribution
 
-## Package
-
-We divide our package into three major Python classes for preparing, running and visualizing the battery trading simulations. More detailed examples on how to use the package are given in [Tutorial](##tutorial)
-
-#### Data Preprocessing
-
-Our `Data` class allows users to read-in raw zipped LOB Data from EPEX (2020 and later), process them accordingly and save each trading day as a separate CSV file. All Data is ultimately stored in UTC timezone format.
-We show and test this for German Market Data of the years 2020 and 2021, specifically using the 1h products of the continuous intraday market, but this can easily be adapted to other regions or other products.
-Inputs to the parsing function simply are the `start-day` and `end-day` of the data we want to parse, plus the `path` to the zipped EPEX market data.
-
-#### Simulation
-The `Simulation` class enables users to initialize simulation instances, set parameters, load the preprocessed LOB Data into the simulation, run the simulation, and return results.
-Conceptually, you first set the parameters of the simulation (battery, dynamic programming, and simulation settings), then decide which days of LOB data to feed, before subsequently running the simulation for the desired amount of time. Order book traversals and optimizations happen in C++, while pre-/post-processing and settings are done in Python. Results are returned as Pandas dataframes and can be fed into the post-processing described below.
-
-#### Results Postprocessing
-
-Our `Results` class, gives users some tools to visualize the final schedule, as determined by the rolling intrinsic simulation, and evaluate some key statistics. Of course, the user is encouraged to look at all simulation outputs in detail to understand the intricacies of the battery's trading behavior.
-
-## Tutorial
-
-We give concrete usage examples and explanations to all the classes discussed above in our [Jupyter Notebook](../blob/master/LICENSE).
-
-To reduce data-loading times, we encourage users to follow the flow of first creating LOB data CSV files with our `Data` class, but then creating LOB data binaries with our `Simulation` class, before running any simulations. Alternatively, users can also directly pass LOB Pandas dataframes to the simulation, at the cost of additional data-loading times.
+We are happy about all forms of feedback and would like to hear from you, if you would like to contribute as well, or are interested in the underlying C++ source code of your simulation engine.
 
 ## License
 
