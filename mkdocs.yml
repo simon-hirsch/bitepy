@@ -30,8 +30,8 @@ theme:
       toggle:
         icon: material/weather-night
         name: Switch to light mode
-  logo: "assets/logo.png"
-  favicon: "assets/logo.png"
+  logo: "assets/bite_logo.png"
+  favicon: "assets/bite_logo.png"
 
 plugins:
   - search
