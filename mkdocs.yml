@@ -7,7 +7,6 @@ nav:
   - Simulation: simulation.md
   - Results Postprocessing: results.md
   - About: about.md
-  - ────────: null
   - Issues [Github] : "https://github.com/dschaurecker/bite/issues"
   - Source [Github] : "https://github.com/dschaurecker/bite/tree/main"
   - Licence [Github] : "https://github.com/dschaurecker/bite/blob/main/LICENSE"
