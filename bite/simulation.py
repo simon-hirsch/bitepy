@@ -462,9 +462,10 @@ class Simulation:
             solve_frequency (float, optional): The frequency at which the dynamic programming solver is run (min). Default is 0.0.
             withdraw_max (float, optional): The maximum withdrawal power of the storage unit (MW). Default is 10.0.
             inject_max (float, optional): The maximum injection power of the storage unit (MW). Default is 10.0.
-            forecast_horizon_start (int, optional): The start of the forecast horizon (min). Default is 600.
-            forecast_horizon_end (int, optional): The end of the forecast horizon (min). Default is 75.
         """
+        # forecast_horizon_start (int, optional): The start of the forecast horizon (min). Default is 600.
+        # forecast_horizon_end (int, optional): The end of the forecast horizon (min). Default is 75.
+
         # write all the assertions
         if start_date >= end_date:
             raise ValueError("start_date must be before end_date")
@@ -491,12 +492,12 @@ class Simulation:
             raise ValueError("withdraw_max must be > 0")
         if inject_max <= 0:
             raise ValueError("inject_max must be > 0")
-        if forecast_horizon_start < 0:
-            raise ValueError("forecast_horizon_start must be >= 0")
-        if forecast_horizon_end < 0:
-            raise ValueError("forecast_horizon_end must be >= 0")
-        if forecast_horizon_start <= forecast_horizon_end:
-            raise ValueError("forecast_horizon_start must larger than forecast_horizon_end")
+        # if forecast_horizon_start < 0:
+        #     raise ValueError("forecast_horizon_start must be >= 0")
+        # if forecast_horizon_end < 0:
+        #     raise ValueError("forecast_horizon_end must be >= 0")
+        # if forecast_horizon_start <= forecast_horizon_end:
+        #     raise ValueError("forecast_horizon_start must larger than forecast_horizon_end")
         
         self._sim_cpp = Simulation_cpp()
 
@@ -511,8 +512,8 @@ class Simulation:
         self._sim_cpp.params.dpFreq = solve_frequency
         self._sim_cpp.params.withdrawMax = withdraw_max
         self._sim_cpp.params.injectMax = inject_max
-        self._sim_cpp.params.foreHorizonStart = forecast_horizon_start
-        self._sim_cpp.params.foreHorizonEnd = forecast_horizon_end
+        # self._sim_cpp.params.foreHorizonStart = forecast_horizon_start
+        # self._sim_cpp.params.foreHorizonEnd = forecast_horizon_end
 
         # Set start and end date
         if start_date >= end_date:
@@ -579,41 +580,41 @@ class Simulation:
 
         self._sim_cpp.addOrderQueueFromPandas(ids, initials, sides, starts, transactions, validities, prices, quantities)
 
-    def add_forecast_from_df(self, df: pd.DataFrame):
-        """
-        Add forecast data from a DataFrame to the simulation.
+    # def add_forecast_from_df(self, df: pd.DataFrame):
+    #     """
+    #     Add forecast data from a DataFrame to the simulation.
 
-        The DataFrame must contain the following columns:
-            - creation_time: The time when the forecast was created (timezone aware, up to millisecond precision).
-            - delivery_start: The start time of the delivery period (timezone aware).
-            - sell_price: The price at which the optimization will try to sell (€/MWh).
-            - buy_price: The price at which the optimization will try to buy (€/MWh).
+    #     The DataFrame must contain the following columns:
+    #         - creation_time: The time when the forecast was created (timezone aware, up to millisecond precision).
+    #         - delivery_start: The start time of the delivery period (timezone aware).
+    #         - sell_price: The price at which the optimization will try to sell (€/MWh).
+    #         - buy_price: The price at which the optimization will try to buy (€/MWh).
 
-        Args:
-            df (pd.DataFrame): A DataFrame containing the forecast data.
+    #     Args:
+    #         df (pd.DataFrame): A DataFrame containing the forecast data.
 
-        Processing Steps:
-            - Validate that the 'creation_time' and 'delivery_start' columns are timezone aware and identical.
-            - Convert the timestamps to UTC and format them in ISO 8601.
-            - Pass the data to the simulation.
-        """
-        if (df["creation_time"].dt.tz is None and df["delivery_start"].dt.tz is None):
-            raise ValueError("All timestamps of input df must be timezone aware")
-        if not (df["creation_time"].dt.tz == df["delivery_start"].dt.tz):
-            raise ValueError("All timestamps of input df must be in the same timezone")
+    #     Processing Steps:
+    #         - Validate that the 'creation_time' and 'delivery_start' columns are timezone aware and identical.
+    #         - Convert the timestamps to UTC and format them in ISO 8601.
+    #         - Pass the data to the simulation.
+    #     """
+    #     if (df["creation_time"].dt.tz is None and df["delivery_start"].dt.tz is None):
+    #         raise ValueError("All timestamps of input df must be timezone aware")
+    #     if not (df["creation_time"].dt.tz == df["delivery_start"].dt.tz):
+    #         raise ValueError("All timestamps of input df must be in the same timezone")
         
-        df["creation_time"] = df["creation_time"].dt.tz_convert("UTC")
-        df["delivery_start"] = df["delivery_start"].dt.tz_convert("UTC")
+    #     df["creation_time"] = df["creation_time"].dt.tz_convert("UTC")
+    #     df["delivery_start"] = df["delivery_start"].dt.tz_convert("UTC")
 
-        df["creation_time"] = df["creation_time"].dt.tz_localize(None).dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
-        df["delivery_start"] = df["delivery_start"].dt.tz_localize(None).dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+    #     df["creation_time"] = df["creation_time"].dt.tz_localize(None).dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
+    #     df["delivery_start"] = df["delivery_start"].dt.tz_localize(None).dt.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        creation_time = df["creation_time"].to_numpy(dtype='str').tolist()
-        delivery_start = df["delivery_start"].to_numpy(dtype='str').tolist()
-        buy_price = df["buy_price"].to_numpy(dtype=np.float64).tolist()
-        sell_price = df["sell_price"].to_numpy(dtype=np.float64).tolist()
+    #     creation_time = df["creation_time"].to_numpy(dtype='str').tolist()
+    #     delivery_start = df["delivery_start"].to_numpy(dtype='str').tolist()
+    #     buy_price = df["buy_price"].to_numpy(dtype=np.float64).tolist()
+    #     sell_price = df["sell_price"].to_numpy(dtype=np.float64).tolist()
 
-        self._sim_cpp.loadForecastMapFromPandas(creation_time, delivery_start, buy_price, sell_price)
+    #     self._sim_cpp.loadForecastMapFromPandas(creation_time, delivery_start, buy_price, sell_price)
 
     def get_data_bins_for_each_day(self, base_path: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
         """

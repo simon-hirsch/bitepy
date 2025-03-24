@@ -67,51 +67,51 @@ PYBIND11_MODULE(_bite, m) {
         .def_property("injectMax",
                         &SimulationParameters::getInjectMaxPy,
                         &SimulationParameters::setInjectMaxPy)
-        .def_property("runType",
-                        &SimulationParameters::getRunTypePy,
-                        &SimulationParameters::setRunTypePy)
-        .def_property("tempDir",
-                        &SimulationParameters::getTempDirPy,
-                        &SimulationParameters::setTempDirPy)
-        .def_property("resultsDir",
-                        &SimulationParameters::getResultsDirPy,
-                        &SimulationParameters::setResultsDirPy)
-        .def_property("cmaesParamPath",
-                        &SimulationParameters::getCmaesParamPathPy,
-                        &SimulationParameters::setCmaesParamPathPy)
+        // .def_property("runType",
+        //                 &SimulationParameters::getRunTypePy,
+        //                 &SimulationParameters::setRunTypePy)
+        // .def_property("tempDir",
+        //                 &SimulationParameters::getTempDirPy,
+        //                 &SimulationParameters::setTempDirPy)
+        // .def_property("resultsDir",
+        //                 &SimulationParameters::getResultsDirPy,
+        //                 &SimulationParameters::setResultsDirPy)
+        // .def_property("cmaesParamPath",
+        //                 &SimulationParameters::getCmaesParamPathPy,
+        //                 &SimulationParameters::setCmaesParamPathPy)
         .def_property("numStorStates",
                         &SimulationParameters::getNumStorStatesPy,
                         &SimulationParameters::setNumStorStatesPy)
-        .def_property("stoRoundDec",
-                        &SimulationParameters::getStoRoundDecPy,
-                        &SimulationParameters::setStoRoundDecPy)
+        // .def_property("stoRoundDec",
+        //                 &SimulationParameters::getStoRoundDecPy,
+        //                 &SimulationParameters::setStoRoundDecPy)
         .def_property("pingDelay",
                         &SimulationParameters::getPingDelayPy,
                         &SimulationParameters::setPingDelayPy)
         .def_property("fixedSolveTime",
                         &SimulationParameters::getFixedSolveTimePy,
                         &SimulationParameters::setFixedSolveTimePy)
-        .def_property("checkProfit",
-                        &SimulationParameters::getCheckProfitPy,
-                        &SimulationParameters::setCheckProfitPy)
-        .def_property("checkLOExec",
-                        &SimulationParameters::getCheckLOExecPy,
-                        &SimulationParameters::setCheckLOExecPy)
-        .def_property("useSliding",
-                        &SimulationParameters::getUseSlidingPy,
-                        &SimulationParameters::setUseSlidingPy)
-        .def_property("foreHorizonStart",
-                        &SimulationParameters::getForeHorizonStartPy,
-                        &SimulationParameters::setForeHorizonStartPy)
-        .def_property("foreHorizonEnd",
-                        &SimulationParameters::getForeHorizonEndPy,
-                        &SimulationParameters::setForeHorizonEndPy)
-        .def_property("bidAskPenalty",
-                        &SimulationParameters::getBidAskPenaltyPy,
-                        &SimulationParameters::setBidAskPenaltyPy)
+        // .def_property("checkProfit",
+        //                 &SimulationParameters::getCheckProfitPy,
+        //                 &SimulationParameters::setCheckProfitPy)
+        // .def_property("checkLOExec",
+        //                 &SimulationParameters::getCheckLOExecPy,
+        //                 &SimulationParameters::setCheckLOExecPy)
+        // .def_property("useSliding",
+        //                 &SimulationParameters::getUseSlidingPy,
+        //                 &SimulationParameters::setUseSlidingPy)
+        // .def_property("foreHorizonStart",
+        //                 &SimulationParameters::getForeHorizonStartPy,
+        //                 &SimulationParameters::setForeHorizonStartPy)
+        // .def_property("foreHorizonEnd",
+        //                 &SimulationParameters::getForeHorizonEndPy,
+        //                 &SimulationParameters::setForeHorizonEndPy)
+        // .def_property("bidAskPenalty",
+        //                 &SimulationParameters::getBidAskPenaltyPy,
+        //                 &SimulationParameters::setBidAskPenaltyPy)
         
         // Method to print parameters
-        .def("printParameters", &SimulationParameters::printParameters);
+        // .def("printParameters", &SimulationParameters::printParameters);
 
 
     // Expose the Simulation class
@@ -135,10 +135,10 @@ PYBIND11_MODULE(_bite, m) {
         .def("writeOrderBinFromPandas", &Simulation::writeOrderBinFromPandas)
         .def("writeOrderBinFromCSV", &Simulation::writeOrderBinFromCSV)
 
-        .def("loadForecastMapFromCSV", &Simulation::loadForecastMapFromCSV)
-        .def("loadForecastMapFromPandas", &Simulation::loadForecastMapFromPandas)
+        // .def("loadForecastMapFromCSV", &Simulation::loadForecastMapFromCSV)
+        // .def("loadForecastMapFromPandas", &Simulation::loadForecastMapFromPandas)
 
-        .def("loadParamMapFromCSV", &Simulation::loadParamMapFromCSV)
+        // .def("loadParamMapFromCSV", &Simulation::loadParamMapFromCSV)
 
         // method to get results
         .def("printSimFinishStats", &Simulation::printSimFinishStats)
