@@ -17,7 +17,7 @@ class Results:
     def get_total_reward(self):
         return np.round(self.logs["decision_record"]['real_reward'].sum(),2)
     
-    def plot_decision_chart(self,lleft,lright):
+    def plot_decision_chart(self,lleft: int = 0,lright: int = -1):
         """
         Plot the storage, market-position, and reward of the agent over the selected simulation period.
 
