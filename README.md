@@ -1,11 +1,11 @@
 # BITE
-## A _Battery Intraday Trading Engine_
 
-<h1 align="center">
-<img src="docs/assets/bite_logo.png" width="300">
-</h1><br>
+## _A Battery Intraday Trading Engine_
 
-[![Version](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+
+<img src="docs/assets/bite_logo.png" width="30">
+
+[![Version](https://img.shields.io/github/v/tag/dschaurecker/bite?label=version&style=flat)](https://github.com/dschaurecker/bite/releases)
 
 A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd) for details on the method and visualizations of the results.
 
