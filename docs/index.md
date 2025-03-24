@@ -23,7 +23,7 @@ pip install bite
 
 ## Package
 
-We divide our package into three major Python classes for preparing, running and visualizing the battery trading simulations. More detailed examples on how to use the package are given in [Tutorial](##tutorial)
+We divide our package into three major Python classes for preparing, running and visualizing the battery trading simulations. More detailed examples on how to use the package are given in the [Tutorial](##tutorial)
 
 #### Data Preprocessing
 

@@ -7,15 +7,32 @@ nav:
   - Simulation: simulation.md
   - Results Postprocessing: results.md
   - About: about.md
+  - "────────": null
+  - Issues [Github] : "https://github.com/dschaurecker/bite/issues"
+  - Source [Github] : "https://github.com/dschaurecker/bite/tree/main"
+  - Licence [Github] : "https://github.com/dschaurecker/bite/blob/main/LICENSE"
 
 theme:
   name: material
   palette: 
+    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      accent: deep orange
+      primary: green
       toggle:
-        icon: material/lightbulb
+        icon: material/weather-sunny
         name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      accent: deep orange
+      primary: green
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  logo: "docs/assets/logo.png"
+  favicon: "docs/assets/logo.png"
 
 plugins:
   - search

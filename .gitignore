@@ -4,6 +4,9 @@ bite/cpp-source-submodule/*
 # Prerequisites
 *.d
 
+# macoOS folder attributes
+*.DS_Store
+
 # Compiled Object files
 *.slo
 *.lo
