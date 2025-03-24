@@ -30,7 +30,7 @@ pip install bite
 
 ## Documentation and Tutorial
 
-Our [Documentation](https://dschaurecker.github.io/bite/) gives a detailed overview on our package's features and will be updated continuously. We also provide a simple [Tutorial](https://github.com/dschaurecker/bite/notebooks/package_tutorial.ipynb) in form of a Jupyter Notebook, guiding users through our simulation process.
+Our [Documentation](https://dschaurecker.github.io/bite/) gives a detailed overview on our package's features and will be updated continuously. We also provide a simple [Tutorial](https://github.com/dschaurecker/bite/blob/main/notebooks/package_tutorial.ipynb) in form of a Jupyter Notebook, guiding users through our simulation process.
 
 ## Contribution
 
