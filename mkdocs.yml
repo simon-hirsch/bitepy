@@ -26,7 +26,7 @@ theme:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       accent: deep orange
-      primary: green
+      primary: teal
       toggle:
         icon: material/weather-night
         name: Switch to light mode

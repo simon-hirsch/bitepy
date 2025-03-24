@@ -11,248 +11,218 @@ except ImportError as e:
         "Failed to import _bite module. Ensure that the C++ extension is correctly built and installed."
     ) from e
 
+
 class Data:
     def __init__(self):
+        """Initialize a Data instance."""
         pass
 
     def _read_id_table_2020(self, timestamp, datapath):
         year = timestamp.strftime("%Y")
         month = timestamp.strftime("%m")
-        datestr = "Continuous_Orders_DE_"+timestamp.strftime("%Y%m%d")
+        datestr = "Continuous_Orders_DE_" + timestamp.strftime("%Y%m%d")
         
-        # get file name of zip-file and csv file within zip file
+        # Get file name of zip-file and CSV file within the zip file
         file_list = os.listdir(f"{datapath}/{year}/{month}")
         zip_file_name = [i for i in file_list if datestr in i][0]
         csv_file_name = zip_file_name[:-4]
 
-        # read data
-        zip_file = ZipFile(f"{datapath}/{year}/{month}/"+zip_file_name)
+        # Read data from the CSV inside the zip file
+        zip_file = ZipFile(f"{datapath}/{year}/{month}/" + zip_file_name)
         df = (pd.read_csv(zip_file.open(csv_file_name), sep=";", decimal=".")
-            .drop_duplicates(subset = ["Order ID", "Initial ID", "Action code", "Validity time", "Price", "Quantity"]) # drop in particular the duplicate orders with action code 'C'
-            .loc[lambda x: x["Is User Defined Block"]==0] # no blocks
-            .loc[lambda x: (x["Product"]=="Intraday_Hour_Power") | (x["Product"]=="XBID_Hour_Power")] # EPEX and XBID
-            .loc[lambda x: (x["Action code"]=="A") | (x["Action code"]=="D") | (x["Action code"]=="C") | (x["Action code"]=="I")]
-            .drop(["Delivery area", "Execution restriction", "Market area", "Parent ID", "Delivery End", "Currency", "Product", "isOTC", "Is User Defined Block", "Unnamed: 20", "RevisionNo", "Entry time"], axis=1)
-            .rename({"Order ID":"order",
-                "Initial ID": "initial",
-                "Delivery Start": "start",
-                "Side" : "side",
-                "Price" : "price",
-                "Volume" : "volume",
-                "Validity time" : "validity",
-                "Action code" : "action",
-                "Transaction Time" : "transaction",
-                "Quantity" : "quantity"
-                }, axis=1)
-            .assign(start=lambda x: pd.to_datetime(x.start, format="%Y-%m-%dT%H:%M:%SZ")) # convert validity time to datetime
-            .assign(validity=lambda x: pd.to_datetime(x.validity, format="%Y-%m-%dT%H:%M:%SZ")) # convert validity time to datetime
-            .assign(transaction=lambda x: pd.to_datetime(x.transaction, format="%Y-%m-%dT%H:%M:%S.%fZ")) # convert transaction time to datetime
-            )
+              .drop_duplicates(subset=["Order ID", "Initial ID", "Action code", "Validity time", "Price", "Quantity"])
+              .loc[lambda x: x["Is User Defined Block"] == 0]
+              .loc[lambda x: (x["Product"] == "Intraday_Hour_Power") | (x["Product"] == "XBID_Hour_Power")]
+              .loc[lambda x: (x["Action code"] == "A") | (x["Action code"] == "D") | (x["Action code"] == "C") | (x["Action code"] == "I")]
+              .drop(["Delivery area", "Execution restriction", "Market area", "Parent ID", "Delivery End",
+                     "Currency", "Product", "isOTC", "Is User Defined Block", "Unnamed: 20", "RevisionNo", "Entry time"],
+                    axis=1)
+              .rename({"Order ID": "order",
+                       "Initial ID": "initial",
+                       "Delivery Start": "start",
+                       "Side": "side",
+                       "Price": "price",
+                       "Volume": "volume",
+                       "Validity time": "validity",
+                       "Action code": "action",
+                       "Transaction Time": "transaction",
+                       "Quantity": "quantity"}, axis=1)
+              .assign(start=lambda x: pd.to_datetime(x.start, format="%Y-%m-%dT%H:%M:%SZ"))
+              .assign(validity=lambda x: pd.to_datetime(x.validity, format="%Y-%m-%dT%H:%M:%SZ"))
+              .assign(transaction=lambda x: pd.to_datetime(x.transaction, format="%Y-%m-%dT%H:%M:%S.%fZ"))
+              )
 
-        # Delete all orders that are visibly iceberg orders (i.e., have one message with I somewhere)
-        # ToDo: That is probably not a good idea
-        iceberg_IDs = df.loc[df["action"] == "I", "initial"].unique() # get all iceberg IDs
-        df = df.loc[~df["initial"].isin(iceberg_IDs)] # delete all orders with iceberg IDs
+        # Remove iceberg orders
+        iceberg_IDs = df.loc[df["action"] == "I", "initial"].unique()
+        df = df.loc[~df["initial"].isin(iceberg_IDs)]
 
-        # Use all order with action code 'C' (change of quantity) and make new orders out of it
-        # ToDo: Is there a more elegant way of doing this? This works reasonably well if there are no orders with many quantity changes.
-        # Attention: This assumes that the messages are ordered correctly (which they seemed to be)
-        change_messages = df[df["action"] == "C"].drop_duplicates(subset = ["order"], keep = "first") # get all change messages and drop duplicates (keep the first one)  there might be more than one change message for one orderID (ie. if multiple changes for an add message exist)
-        not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))] # get all change messages rows of df, that are not added (i.e., there is no order with action code 'A' with the same order ID); no "not_added" entries should exist at the beginning
-        change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))] # delete those change messages that are not added, ie. not "A"
-
-        # display all rows of df with duplicate "order" value of at least 3 equal order values
-        # display first 1000 rows
-        # display(df[df.duplicated(subset = ["order"], keep = False)].sort_values("order").head(1000))
+        # Process change messages (action code 'C')
+        change_messages = df[df["action"] == "C"].drop_duplicates(subset=["order"], keep="first")
+        not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
+        change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))]
         
         change_exists = change_messages.shape[0] > 0
         change_counter = 0
         while change_exists:
-            # get last line (by transaction time) with action code 'A' that belongs to the change (may be the single last change line) and then change the validity date correspondingly
-            indexer_messA_with_change = df[(df["order"].isin(change_messages["order"])) & (df["action"] == "A")].sort_values("transaction").groupby("order").tail(1).index # get indices of all "A" messages of df and whose order number is in change_messages; only take the last entry of each group (there should be only one entry)
+            indexer_messA_with_change = df[(df["order"].isin(change_messages["order"])) & (df["action"] == "A")] \
+                .sort_values("transaction").groupby("order").tail(1).index
 
-            df["df_index_copy"] = df.index # copy the index to preserve after merge below
-            merged = pd.merge(change_messages, df.loc[indexer_messA_with_change], on = 'order') 
-            df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy() # change the validity date of the add messages in df to the transaction date of the change messages
+            df["df_index_copy"] = df.index
+            merged = pd.merge(change_messages, df.loc[indexer_messA_with_change], on='order')
+            df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy()
 
-
-            # change the action code of the change message to "A", ie. add so that it can be processed in the next iteration; ie. change the "C" message to an "A" message
+            # Change the action code from "C" to "A" for processed messages
             df.loc[df.index.isin(change_messages.index), "action"] = "A"
-            df.drop("df_index_copy", axis=1, inplace=True) # remove this column for the next iteration
+            df.drop("df_index_copy", axis=1, inplace=True)
 
-            
-            # redo precedure
-            change_messages = df[df["action"] == "C"].drop_duplicates(subset = ["order"], keep = "first")
+            # Redo the procedure for remaining change messages
+            change_messages = df[df["action"] == "C"].drop_duplicates(subset=["order"], keep="first")
             not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
             change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))]
             change_exists = change_messages.shape[0] > 0
             change_counter += 1
-        #print("Size of largest change stack: ", change_counter, flush=True)
 
-        # take all orders with action code 'D' (delete) and use the transaction date of those as the new validity time of the orders with the same order ID
+        # Process cancel messages (action code 'D')
         cancel_messages = df[df["action"] == "D"]
-        
-        # delete those cancel_messages that belong to orders that are not previously added (ToDo: Why do such messages exist?)
         not_added = cancel_messages[~(cancel_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
         cancel_messages = cancel_messages[~(cancel_messages["order"].isin(not_added["order"]))]
         
-        indexer_messA_with_cancel = df[(df["order"].isin(cancel_messages["order"])) & (df["action"] == "A")].sort_values("transaction").groupby("order").tail(1).index
+        indexer_messA_with_cancel = df[(df["order"].isin(cancel_messages["order"])) & (df["action"] == "A")] \
+            .sort_values("transaction").groupby("order").tail(1).index
         df["df_index_copy"] = df.index
-        merged = pd.merge(cancel_messages, df.loc[indexer_messA_with_cancel], on = 'order')
+        merged = pd.merge(cancel_messages, df.loc[indexer_messA_with_cancel], on='order')
         df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy()
 
-        df = df.loc[lambda x: ~(x["action"] == "D")] # delete all cancel messages (they are not needed anymore)
-        
-        # drop columns "Order ID" and "Action" and "df_index_copy"
-        df = df.drop(["order", "action", "df_index_copy"], axis=1) # drop the action and order columns as they are not needed anymore (only add messages are left)
+        df = df.loc[lambda x: ~(x["action"] == "D")]
+        df = df.drop(["order", "action", "df_index_copy"], axis=1)
 
-        # reorder columns
+        # Reorder and format columns
         newOrder = ["initial", "side", "start", "transaction", "validity", "price", "quantity"]
         df = df[newOrder]
-        # Convert all strings in the "side" column to uppercase
         df['side'] = df['side'].str.upper()
 
         df["start"] = df["start"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-        df["transaction"] = df["transaction"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3]+'Z'
-        df["validity"] = df["validity"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3]+'Z'
+        df["transaction"] = df["transaction"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
+        df["validity"] = df["validity"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
         
         return df
 
     def _read_id_table_2021(self, timestamp, datapath):
         year = timestamp.strftime("%Y")
         month = timestamp.strftime("%m")
-        datestr = "Continuous_Orders-DE-"+timestamp.strftime("%Y%m%d")
+        datestr = "Continuous_Orders-DE-" + timestamp.strftime("%Y%m%d")
         
-        # get file name of zip-file and csv file within zip file
+        # Get file name of zip-file and CSV file within the zip file
         file_list = os.listdir(f"{datapath}/{year}/{month}")
         zip_file_name = [i for i in file_list if datestr in i][0]
         csv_file_name = zip_file_name[:-4]
 
-        # read data
-        zip_file = ZipFile(f"{datapath}/{year}/{month}/"+zip_file_name)
-        df = (pd.read_csv(zip_file.open(csv_file_name), sep=",", decimal=".", skiprows = 1)
-            .drop_duplicates(subset = ["OrderId", "InitialId", "ActionCode", "ValidityTime", "Price", "Quantity"]) # drop in particular the duplicate orders with action code 'C'
-            .loc[lambda x: x["UserDefinedBlock"]=="N"] # no blocks
-            .loc[lambda x: (x["Product"]=="Intraday_Hour_Power") | (x["Product"]=="XBID_Hour_Power")] # EPEX and XBID Hourly Products
-            .loc[lambda x: (x["ActionCode"]=="A") | (x["ActionCode"]=="D") | (x["ActionCode"]=="C") | (x["ActionCode"]=="I")] # only add, delete, change, and iceberg orders
-            .drop(["LinkedBasketId", "DeliveryArea", "ParentId", "DeliveryEnd", "Currency", "Product", "UserDefinedBlock", "RevisionNo", "ExecutionRestriction", "CreationTime", "QuantityUnit", "Volume", "VolumeUnit"], axis=1) # drop columns that are not needed
-            .rename({"OrderId":"order",
-                "InitialId": "initial",
-                "DeliveryStart": "start",
-                "Side" : "side",
-                "Price" : "price",
-                "Volume" : "volume",
-                "ValidityTime" : "validity",
-                "ActionCode" : "action",
-                "TransactionTime" : "transaction",
-                "Quantity" : "quantity"
-                }, axis=1)
-                    .assign(start=lambda x: pd.to_datetime(x.start, format="%Y-%m-%dT%H:%M:%SZ")) # convert validity time to datetime
-                    .assign(validity=lambda x: pd.to_datetime(x.validity, format="%Y-%m-%dT%H:%M:%SZ")) # convert validity time to datetime
-                    .assign(transaction=lambda x: pd.to_datetime(x.transaction, format="%Y-%m-%dT%H:%M:%S.%fZ")) # convert transaction time to datetime
-            )
-        # Delete all orders that are visibly iceberg orders (i.e., have one message with I somewhere)
-        # ToDo: That is probably not a good idea
-        iceberg_IDs = df.loc[df["action"] == "I", "initial"].unique() # get all iceberg IDs
-        df = df.loc[~df["initial"].isin(iceberg_IDs)] # delete all orders with iceberg IDs
+        # Read data from the CSV inside the zip file
+        zip_file = ZipFile(f"{datapath}/{year}/{month}/" + zip_file_name)
+        df = (pd.read_csv(zip_file.open(csv_file_name), sep=",", decimal=".", skiprows=1)
+              .drop_duplicates(subset=["OrderId", "InitialId", "ActionCode", "ValidityTime", "Price", "Quantity"])
+              .loc[lambda x: x["UserDefinedBlock"] == "N"]
+              .loc[lambda x: (x["Product"] == "Intraday_Hour_Power") | (x["Product"] == "XBID_Hour_Power")]
+              .loc[lambda x: (x["ActionCode"] == "A") | (x["ActionCode"] == "D") | (x["ActionCode"] == "C") | (x["ActionCode"] == "I")]
+              .drop(["LinkedBasketId", "DeliveryArea", "ParentId", "DeliveryEnd", "Currency", "Product",
+                     "UserDefinedBlock", "RevisionNo", "ExecutionRestriction", "CreationTime", "QuantityUnit",
+                     "Volume", "VolumeUnit"], axis=1)
+              .rename({"OrderId": "order",
+                       "InitialId": "initial",
+                       "DeliveryStart": "start",
+                       "Side": "side",
+                       "Price": "price",
+                       "Volume": "volume",
+                       "ValidityTime": "validity",
+                       "ActionCode": "action",
+                       "TransactionTime": "transaction",
+                       "Quantity": "quantity"}, axis=1)
+              .assign(start=lambda x: pd.to_datetime(x.start, format="%Y-%m-%dT%H:%M:%SZ"))
+              .assign(validity=lambda x: pd.to_datetime(x.validity, format="%Y-%m-%dT%H:%M:%SZ"))
+              .assign(transaction=lambda x: pd.to_datetime(x.transaction, format="%Y-%m-%dT%H:%M:%S.%fZ"))
+              )
+        # Remove iceberg orders
+        iceberg_IDs = df.loc[df["action"] == "I", "initial"].unique()
+        df = df.loc[~df["initial"].isin(iceberg_IDs)]
 
-        # Use all order with action code 'C' (change of quantity) and make new orders out of it
-        # ToDo: Is there a more elegant way of doing this? This works reasonably well if there are no orders with many quantity changes.
-        # Attention: This assumes that the messages are ordered correctly (which they seemed to be)
-        change_messages = df[df["action"] == "C"].drop_duplicates(subset = ["order"], keep = "first") # get all change messages and drop duplicates (keep the first one)  there might be more than one change message for one orderID (ie. if multiple changes for an add message exist)
-        not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))] # get all change messages rows of df, that are not added (i.e., there is no order with action code 'A' with the same order ID); no "not_added" entries should exist at the beginning
-        change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))] # delete those change messages that are not added, ie. not "A"
-
-        # display all rows of df with duplicate "order" value of at least 3 equal order values
-        # display first 1000 rows
-        # display(df[df.duplicated(subset = ["order"], keep = False)].sort_values("order").head(1000))
-
-        
+        # Process change messages (action code 'C')
+        change_messages = df[df["action"] == "C"].drop_duplicates(subset=["order"], keep="first")
+        not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
+        change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))]
         
         change_exists = change_messages.shape[0] > 0
         change_counter = 0
         while change_exists:
-            # get last line (by transaction time) with action code 'A' that belongs to the change (may be the single last change line) and then change the validity date correspondingly
-            indexer_messA_with_change = df[(df["order"].isin(change_messages["order"])) & (df["action"] == "A")].sort_values("transaction").groupby("order").tail(1).index # get indices of all "A" messages of df and whose order number is in change_messages; only take the last entry of each group (there should be only one entry)
+            indexer_messA_with_change = df[(df["order"].isin(change_messages["order"])) & (df["action"] == "A")] \
+                .sort_values("transaction").groupby("order").tail(1).index
 
-            df["df_index_copy"] = df.index # copy the index to preserve after merge below
-            merged = pd.merge(change_messages, df.loc[indexer_messA_with_change], on = 'order') 
-            df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy() # change the validity date of the add messages in df to the transaction date of the change messages
+            df["df_index_copy"] = df.index
+            merged = pd.merge(change_messages, df.loc[indexer_messA_with_change], on='order')
+            df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy()
 
-
-            # change the action code of the change message to "A", ie. add so that it can be processed in the next iteration; ie. change the "C" message to an "A" message
+            # Change the action code from "C" to "A" so it can be processed in the next iteration
             df.loc[df.index.isin(change_messages.index), "action"] = "A"
-            df.drop("df_index_copy", axis=1, inplace=True) # remove this column for the next iteration
+            df.drop("df_index_copy", axis=1, inplace=True)
 
-            
-            # redo precedure
-            change_messages = df[df["action"] == "C"].drop_duplicates(subset = ["order"], keep = "first")
+            # Redo procedure for remaining change messages
+            change_messages = df[df["action"] == "C"].drop_duplicates(subset=["order"], keep="first")
             not_added = change_messages[~(change_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
             change_messages = change_messages[~(change_messages["order"].isin(not_added["order"]))]
             change_exists = change_messages.shape[0] > 0
             change_counter += 1
-        #print("Size of largest change stack: ", change_counter, flush=True)
 
-        # take all orders with action code 'D' (delete) and use the transaction date of those as the new validity time of the orders with the same order ID
+        # Process cancel messages (action code 'D')
         cancel_messages = df[df["action"] == "D"]
-        
-        # delete those cancel_messages that belong to orders that are not previously added (ToDo: Why do such messages exist?)
         not_added = cancel_messages[~(cancel_messages["order"].isin(df.loc[df["action"] == "A", "order"]))]
         cancel_messages = cancel_messages[~(cancel_messages["order"].isin(not_added["order"]))]
         
-        indexer_messA_with_cancel = df[(df["order"].isin(cancel_messages["order"])) & (df["action"] == "A")].sort_values("transaction").groupby("order").tail(1).index
+        indexer_messA_with_cancel = df[(df["order"].isin(cancel_messages["order"])) & (df["action"] == "A")] \
+            .sort_values("transaction").groupby("order").tail(1).index
         df["df_index_copy"] = df.index
-        merged = pd.merge(cancel_messages, df.loc[indexer_messA_with_cancel], on = 'order')
+        merged = pd.merge(cancel_messages, df.loc[indexer_messA_with_cancel], on='order')
         df.loc[merged["df_index_copy"].to_numpy(), "validity"] = merged["transaction_x"].to_numpy()
 
-        df = df.loc[lambda x: ~(x["action"] == "D")] # delete all cancel messages (they are not needed anymore)
-        
-        # drop columns "Order ID" and "Action" and "df_index_copy"
-        df = df.drop(["order", "action", "df_index_copy"], axis=1) # drop the action and order columns as they are not needed anymore (only add messages are left)
+        df = df.loc[lambda x: ~(x["action"] == "D")]
+        df = df.drop(["order", "action", "df_index_copy"], axis=1)
 
         df["start"] = df["start"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-        df["transaction"] = df["transaction"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3]+'Z'
-        df["validity"] = df["validity"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3]+'Z'
+        df["transaction"] = df["transaction"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
+        df["validity"] = df["validity"].dt.tz_localize('UTC').dt.strftime('%Y-%m-%dT%H:%M:%S.%f').str[:-3] + 'Z'
         
         return df
 
-    def parse_market_data(self, sd: str, ed: str, marketdatapath: str, savepath: str, verbose: bool=True):
+    def parse_market_data(self, start_date_str: str, end_date_str: str, marketdatapath: str, savepath: str, verbose: bool = True):
         """
-        Parameters
-        ----------
-        sd : str
-            Start date in the format "YYYY-MM-DD".
+        Parse EPEX market data between two dates and save processed CSV files.
 
-        ed : str
-            End date in the format "YYYY-MM-DD".
+        This method sequentially loads and processes the raw market data files (zipped order book data)
+        provided by EPEX. It converts the raw data into a sorted CSV file for each day in UTC time format.
 
-        marketdatapath : str
-            Path to the market data folder, as given by EPEX. The folder should contain subfolders for each year, which in turn contain subfolders for each month. We expect the zipped raw LOB data in these subfolders, in the daily structure provided by EPEX.
-        
-        savepath : str
-            Path where the parsed data CSVs should be saved.
+        The processing constructs the file name based on the timestamp,
+        reads the zipped CSV file (using a different CSV format and separator compared to 2020),
+        processes the data by removing duplicates, filtering rows, renaming columns,
+        and converting timestamp columns to UTC ISO 8601 format.
+        Additional processing is done to handle change and cancel messages.
 
-        verbose : bool
-            If True, print progress messages.
-
-        Processing Steps
-        -------
-        1. Sequentially load and pre-process all EPEX market Data, day after day.
-        2. Processed data is stored in UTC time format, sorted by transaction time.
-        3. Each CSV file contains the order book data for a single day. E.g., data in orderbook_2021-01-01 contains all orders placed on 2021-01-01 (UTC time).
+        Args:
+            start_date_str (str): Start date string in the format "YYYY-MM-DD" (no time zone).
+            end_date_str (str): End date string in the format "YYYY-MM-DD" (no time zone).
+            marketdatapath (str): Path to the market data folder containing yearly/monthly subfolders with zipped files.
+            savepath (str): Directory path where the parsed CSV files should be saved.
+            verbose (bool, optional): If True, print progress messages. Defaults to True.
         """
-
         if not os.path.exists(savepath):
             os.makedirs(savepath)
 
-        start_date = pd.Timestamp(sd)
-        end_date = pd.Timestamp(ed)
+        start_date = pd.Timestamp(start_date_str)
+        end_date = pd.Timestamp(end_date_str)
     
         if start_date > end_date:
             raise ValueError("Error: Start date is after end date.")
         if start_date.year < 2020:
             raise ValueError("Error: Years before 2020 are not supported.")
-        dates = pd.date_range(start_date,end_date,freq="D")
+
+        dates = pd.date_range(start_date, end_date, freq="D")
         df1 = pd.DataFrame()
         df2 = pd.DataFrame()
         
@@ -277,7 +247,7 @@ class Data:
                     else:
                         raise ValueError("Error: Year not >= 2020")
         
-                df = pd.concat([df1,df2])
+                df = pd.concat([df1, df2])
                 df = df.sort_values(by='transaction')
                 df['transaction_date'] = pd.to_datetime(df['transaction']).dt.date  # Extract date part
                 grouped = df.groupby('transaction_date')
@@ -290,28 +260,19 @@ class Data:
         
         print("\nWriting CSV data completed.")
 
-    def create_bins_from_csv(self, csv_list: list, save_path: str, verbose: bool=True):
+    def create_bins_from_csv(self, csv_list: list, save_path: str, verbose: bool = True):
         """
-        Parameters
-        ----------
+        Convert CSV files of pre-processed order book data into binary files.
 
-        csv_list : list
-            List of paths to CSV files containing the pre-processed order book data.
+        This method sequentially loads each previously generated CSV file, converts it to a binary format using the C++ simulation
+        extension, and saves the binary file in the specified directory. Binary files allow for much (10x) quicker loading
+        of the data at runtime.
 
-        save_path : str
-            Path where the binary files should be saved under the same name as the CSV files.
-
-        verbose : bool
-            If True, print progress messages.
-
-        Processing Steps
-        -------
-
-        1. Sequentially load the CSV files and convert them to binary files.
-        2. Binary files are saved in the same directory as the CSV files.
-        3. This enables much quicker loading of the data at runtime.
+        Args:
+            csv_list (list): List of file paths to the CSV files containing pre-processed order book data.
+            save_path (str): Directory path where the binary files should be saved. The binary files will use the same base name as the CSV files.
+            verbose (bool, optional): If True, print progress messages. Defaults to True.
         """
-
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
@@ -320,8 +281,7 @@ class Data:
             for csv_file_path in csv_list:
                 filename = os.path.basename(csv_file_path)
                 bin_file_path = os.path.join(save_path, filename.replace(".csv", ".bin"))
-                pbar.set_description(f"Currently saving binary {bin_file_path.split("/")[-1]} ... ")
+                pbar.set_description(f"Currently saving binary {bin_file_path.split('/')[-1]} ... ")
                 _sim.writeOrderBinFromCSV(csv_file_path, bin_file_path)
                 pbar.update(1)
         print("\nWriting Binaries completed.")
-
