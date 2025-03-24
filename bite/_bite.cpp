@@ -90,7 +90,7 @@ PYBIND11_MODULE(_bite, m) {
                         &SimulationParameters::setPingDelayPy)
         .def_property("fixedSolveTime",
                         &SimulationParameters::getFixedSolveTimePy,
-                        &SimulationParameters::setFixedSolveTimePy)
+                        &SimulationParameters::setFixedSolveTimePy);
         // .def_property("checkProfit",
         //                 &SimulationParameters::getCheckProfitPy,
         //                 &SimulationParameters::setCheckProfitPy)
