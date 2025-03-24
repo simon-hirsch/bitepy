@@ -1,7 +1,9 @@
 # BITE
 ## A _Battery Intraday Trading Engine_
 
-![alt text](docs/assets/bite_logo.png "Logo Title Text 1")
+<h1 align="center">
+<img src="docs/assets/bite_logo.png" width="300">
+</h1><br>
 
 [![Version](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
