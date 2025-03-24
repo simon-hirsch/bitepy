@@ -5,12 +5,26 @@ from . import heatmap as hm
 
 class Results:
     def __init__(self, logs: dict):
+        """
+        Initialize a Simulation instance.
+
+        Args:
+            logs (dict): A dictionary containing the get_logs() output of the simulation class.
+        """
+        
         self.logs = logs
 
     def get_total_reward(self):
         return np.round(self.logs["decision_record"]['real_reward'].sum(),2)
     
     def plot_decision_chart(self,lleft,lright):
+        """
+        Plot the storage, market-position, and reward of the agent over the selected simulation period.
+
+        Args:
+            lleft (int): The left index of the simulation period.
+            lright (int): The right index of the simulation period.
+        """
         df = self.logs["decision_record"]
 
         # plot storage, position, and reward where reward is in a seperate axis below
@@ -50,6 +64,7 @@ class Results:
 
     def plot_heatmap(self):
         """
+        Plot a heatmap of the final storage positions and visualize the executed orders over the simulation period.
         Heatmap plots adapted from: https://github.com/bitstoenergy/iclr-smartmeteranalytics by Markus Kreft.
         """
 
