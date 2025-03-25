@@ -23,9 +23,9 @@ class Simulation:
                  fixed_solve_time=0,
                  solve_frequency=0.,
                  withdraw_max=10.,
-                 inject_max=10.,
-                 forecast_horizon_start=10*60,
-                 forecast_horizon_end=75):
+                 inject_max=10.):
+                #  forecast_horizon_start=10*60,
+                #  forecast_horizon_end=75):
         """
         Initialize a Simulation instance.
 
