@@ -18,12 +18,15 @@ jobs:
       image: quay.io/pypa/manylinux_2_28_x86_64
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           submodules: false
+
+      - name: Install ssh-keyscan (openssh-clients)
+        run: yum install -y openssh-clients
 
       - name: Set up SSH access for private submodule
         run: |
@@ -126,7 +129,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
       fail-fast: false
     steps:
       - name: Check out repository
@@ -137,7 +140,7 @@ jobs:
       - name: Set up SSH access for private submodule
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan github.com >> ~/.ssh/known_hosts
         
