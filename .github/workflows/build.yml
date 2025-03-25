@@ -31,7 +31,7 @@ jobs:
     #   - name: Install ssh-keyscan (openssh-clients)
     #     run: yum install -y openssh-clients
       - name: Install SSH
-        run: yum install -y openssh
+        run: yum install -y openssh-clients
 
       - name: Set up SSH access for private submodule
         run: |
