@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
-          
+
       - name: Mark repo as safe for Git
         run: git config --global --add safe.directory /__w/bite/bite
 
@@ -36,7 +36,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          echo "|1|f+YKrO9LRNTH/2DL8Ro6FK6x4X8=|GEEC6KNSqNGvFJSzFYTCQhP+6nM= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmynNXB3CXiCX//hl/tlKHcpTO1d8x+mU/1fJ5Zc+Wb" >> ~/.ssh/known_hosts
         
       - name: Initialize submodules
         run: |
