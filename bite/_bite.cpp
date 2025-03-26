@@ -6,16 +6,16 @@
 
 #include "Simulation.h"
 
-using Simulation::Simulation;
-using SimulationParameters::SimulationParameters;
-
 namespace py = pybind11;
+
+using simParams = simulationparameters::SimulationParameters;
+using sim = simulation::Simulation;
 
 PYBIND11_MODULE(_bite, m) {
     m.doc() = "pybind11 wrapper for the Simulation C++ code";
     // Params class
     // **Expose SimulationParameters class**
-    py::class_<SimulationParameters>(m, "SimulationParameters")
+    py::class_<simParams>(m, "SimulationParameters")
         // Constructor with parameter file path
         // .def(py::init<const std::string&>(), py::arg("paramFilePath"))
         // Constructor with default values
@@ -23,120 +23,120 @@ PYBIND11_MODULE(_bite, m) {
 
         // **Getter and Setter as properties**
         .def_property("storageMax",
-                      &SimulationParameters::getStorageMaxPy,   // Getter
-                      &SimulationParameters::setStorageMaxPy)   // Setter
+                      &simParams::getStorageMaxPy,   // Getter
+                      &simParams::setStorageMaxPy)   // Setter
         .def_property("startMonth",
-                        &SimulationParameters::getStartMonthPy,
-                        &SimulationParameters::setStartMonthPy)
+                        &simParams::getStartMonthPy,
+                        &simParams::setStartMonthPy)
         .def_property("endMonth",
-                        &SimulationParameters::getEndMonthPy,
-                        &SimulationParameters::setEndMonthPy)
+                        &simParams::getEndMonthPy,
+                        &simParams::setEndMonthPy)
         .def_property("startDay",
-                        &SimulationParameters::getStartDayPy,
-                        &SimulationParameters::setStartDayPy)
+                        &simParams::getStartDayPy,
+                        &simParams::setStartDayPy)
         .def_property("endDay",
-                        &SimulationParameters::getEndDayPy,
-                        &SimulationParameters::setEndDayPy)
+                        &simParams::getEndDayPy,
+                        &simParams::setEndDayPy)
         .def_property("startHour",
-                        &SimulationParameters::getStartHourPy,
-                        &SimulationParameters::setStartHourPy)
+                        &simParams::getStartHourPy,
+                        &simParams::setStartHourPy)
         .def_property("endHour",
-                        &SimulationParameters::getEndHourPy,
-                        &SimulationParameters::setEndHourPy)
+                        &simParams::getEndHourPy,
+                        &simParams::setEndHourPy)
         .def_property("startYear",
-                        &SimulationParameters::getStartYearPy,
-                        &SimulationParameters::setStartYearPy)
+                        &simParams::getStartYearPy,
+                        &simParams::setStartYearPy)
         .def_property("endYear",
-                        &SimulationParameters::getEndYearPy,
-                        &SimulationParameters::setEndYearPy)
+                        &simParams::getEndYearPy,
+                        &simParams::setEndYearPy)
         .def_property("dpFreq",
-                        &SimulationParameters::getDpFreqPy,
-                        &SimulationParameters::setDpFreqPy)
+                        &simParams::getDpFreqPy,
+                        &simParams::setDpFreqPy)
         .def_property("lossIn",
-                        &SimulationParameters::getLossInPy,
-                        &SimulationParameters::setLossInPy)
+                        &simParams::getLossInPy,
+                        &simParams::setLossInPy)
         .def_property("lossOut",
-                        &SimulationParameters::getLossOutPy,
-                        &SimulationParameters::setLossOutPy)
+                        &simParams::getLossOutPy,
+                        &simParams::setLossOutPy)
         .def_property("linDegCost",
-                        &SimulationParameters::getLinDegCostPy,
-                        &SimulationParameters::setLinDegCostPy)
+                        &simParams::getLinDegCostPy,
+                        &simParams::setLinDegCostPy)
         .def_property("tradingFee",
-                        &SimulationParameters::getTradingFeePy,
-                        &SimulationParameters::setTradingFeePy)
+                        &simParams::getTradingFeePy,
+                        &simParams::setTradingFeePy)
         .def_property("withdrawMax",
-                        &SimulationParameters::getWithdrawMaxPy,
-                        &SimulationParameters::setWithdrawMaxPy)
+                        &simParams::getWithdrawMaxPy,
+                        &simParams::setWithdrawMaxPy)
         .def_property("injectMax",
-                        &SimulationParameters::getInjectMaxPy,
-                        &SimulationParameters::setInjectMaxPy)
+                        &simParams::getInjectMaxPy,
+                        &simParams::setInjectMaxPy)
         // .def_property("runType",
-        //                 &SimulationParameters::getRunTypePy,
-        //                 &SimulationParameters::setRunTypePy)
+        //                 &simParams::getRunTypePy,
+        //                 &simParams::setRunTypePy)
         // .def_property("tempDir",
-        //                 &SimulationParameters::getTempDirPy,
-        //                 &SimulationParameters::setTempDirPy)
+        //                 &simParams::getTempDirPy,
+        //                 &simParams::setTempDirPy)
         // .def_property("resultsDir",
-        //                 &SimulationParameters::getResultsDirPy,
-        //                 &SimulationParameters::setResultsDirPy)
+        //                 &simParams::getResultsDirPy,
+        //                 &simParams::setResultsDirPy)
         // .def_property("cmaesParamPath",
-        //                 &SimulationParameters::getCmaesParamPathPy,
-        //                 &SimulationParameters::setCmaesParamPathPy)
+        //                 &simParams::getCmaesParamPathPy,
+        //                 &simParams::setCmaesParamPathPy)
         .def_property("numStorStates",
-                        &SimulationParameters::getNumStorStatesPy,
-                        &SimulationParameters::setNumStorStatesPy)
+                        &simParams::getNumStorStatesPy,
+                        &simParams::setNumStorStatesPy)
         // .def_property("stoRoundDec",
-        //                 &SimulationParameters::getStoRoundDecPy,
-        //                 &SimulationParameters::setStoRoundDecPy)
+        //                 &simParams::getStoRoundDecPy,
+        //                 &simParams::setStoRoundDecPy)
         .def_property("pingDelay",
-                        &SimulationParameters::getPingDelayPy,
-                        &SimulationParameters::setPingDelayPy)
+                        &simParams::getPingDelayPy,
+                        &simParams::setPingDelayPy)
         .def_property("fixedSolveTime",
-                        &SimulationParameters::getFixedSolveTimePy,
-                        &SimulationParameters::setFixedSolveTimePy);
+                        &simParams::getFixedSolveTimePy,
+                        &simParams::setFixedSolveTimePy);
         // .def_property("checkProfit",
-        //                 &SimulationParameters::getCheckProfitPy,
-        //                 &SimulationParameters::setCheckProfitPy)
+        //                 &simParams::getCheckProfitPy,
+        //                 &simParams::setCheckProfitPy)
         // .def_property("checkLOExec",
-        //                 &SimulationParameters::getCheckLOExecPy,
-        //                 &SimulationParameters::setCheckLOExecPy)
+        //                 &simParams::getCheckLOExecPy,
+        //                 &simParams::setCheckLOExecPy)
         // .def_property("useSliding",
-        //                 &SimulationParameters::getUseSlidingPy,
-        //                 &SimulationParameters::setUseSlidingPy)
+        //                 &simParams::getUseSlidingPy,
+        //                 &simParams::setUseSlidingPy)
         // .def_property("foreHorizonStart",
-        //                 &SimulationParameters::getForeHorizonStartPy,
-        //                 &SimulationParameters::setForeHorizonStartPy)
+        //                 &simParams::getForeHorizonStartPy,
+        //                 &simParams::setForeHorizonStartPy)
         // .def_property("foreHorizonEnd",
-        //                 &SimulationParameters::getForeHorizonEndPy,
-        //                 &SimulationParameters::setForeHorizonEndPy)
+        //                 &simParams::getForeHorizonEndPy,
+        //                 &simParams::setForeHorizonEndPy)
         // .def_property("bidAskPenalty",
-        //                 &SimulationParameters::getBidAskPenaltyPy,
-        //                 &SimulationParameters::setBidAskPenaltyPy)
+        //                 &simParams::getBidAskPenaltyPy,
+        //                 &simParams::setBidAskPenaltyPy)
         
         // Method to print parameters
-        // .def("printParameters", &SimulationParameters::printParameters);
+        // .def("printParameters", &simParams::printParameters);
 
 
     // Expose the Simulation class
-    py::class_<Simulation>(m, "Simulation_cpp")
+    py::class_<sim>(m, "Simulation_cpp")
         // constructor
         // .def(py::init<const std::string &>(),
         //      py::arg("param_path"))
         .def(py::init<>())
         // Expose 'params' as a property
         .def_property("params", 
-                      [](Simulation &self) -> SimulationParameters& { return self.params; },  // getter
-                      [](Simulation &self, SimulationParameters &new_params) { self.params = new_params; }) // setter
+                      [](sim &self) -> SimulationParameters& { return self.params; },  // getter
+                      [](sim &self, simParams &new_params) { self.params = new_params; }) // setter
         // method to run
         .def("run",
-            &Simulation::run,
+            &sim::run,
             py::arg("isLastDataset"),
             "Run the simulation. 'isLast' indicates if this is the final run.")
 
-        .def("addOrderQueueFromPandas", &Simulation::addOrderQueueFromPandas)
-        .def("addOrderQueueFromBin", &Simulation::addOrderQueueFromBin)
-        .def("writeOrderBinFromPandas", &Simulation::writeOrderBinFromPandas)
-        .def("writeOrderBinFromCSV", &Simulation::writeOrderBinFromCSV)
+        .def("addOrderQueueFromPandas", &sim::addOrderQueueFromPandas)
+        .def("addOrderQueueFromBin", &sim::addOrderQueueFromBin)
+        .def("writeOrderBinFromPandas", &sim::writeOrderBinFromPandas)
+        .def("writeOrderBinFromCSV", &sim::writeOrderBinFromCSV)
 
         // .def("loadForecastMapFromCSV", &Simulation::loadForecastMapFromCSV)
         // .def("loadForecastMapFromPandas", &Simulation::loadForecastMapFromPandas)
@@ -144,14 +144,14 @@ PYBIND11_MODULE(_bite, m) {
         // .def("loadParamMapFromCSV", &Simulation::loadParamMapFromCSV)
 
         // method to get results
-        .def("printSimFinishStats", &Simulation::printSimFinishStats)
+        .def("printSimFinishStats", &sim::printSimFinishStats)
 
         // returnReward as double
-        .def("returnReward", [](Simulation &self) {
+        .def("returnReward", [](sim &self) {
             return self.returnReward();
         })
 
-        .def("getLogs", [](Simulation &self) {
+        .def("getLogs", [](sim &self) {
             // C++ -> Python
             auto decRecord = self.getDecisionData();
             py::list decisionRec;
@@ -276,7 +276,7 @@ PYBIND11_MODULE(_bite, m) {
             return py::make_tuple(decisionRec, priceRec, accOrderList, execOrderList, foreOrderList, removedOrdersList, balOrderList);
         })
 
-        .def("return_vol_price_pairs", [](Simulation &self, const bool last, const int frequency, const std::vector<int>& volumes) {
+        .def("return_vol_price_pairs", [](sim &self, const bool last, const int frequency, const std::vector<int>& volumes) {
             py::list vol_price_list;
             std::map<int64_t, std::map<int64_t, std::map<int, std::pair<int,int>>>> priceVolMap = self.return_vol_price_pairs(last, frequency, volumes);
             
