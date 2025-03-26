@@ -18,7 +18,7 @@ jobs:
       image: quay.io/pypa/manylinux_2_28_x86_64
     strategy:
       matrix:
-        python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -99,42 +99,42 @@ jobs:
 ################
 # build macOS and Windows wheels
 
-#   build_native:
-#     name: Build Wheels (macOS & Windows)
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       matrix:
-#         os: [macos-latest, windows-latest]
-#         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-#       fail-fast: false
-#     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v4
-#         with:
-#           submodules: false
+  build_native:
+    name: Build Wheels (macOS & Windows)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+      fail-fast: false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
 
-#       - name: Set up Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-#       - name: Set C++17 Standard
-#         run: |
-#           echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
-#           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
+      - name: Set C++17 Standard
+        run: |
+          echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
+          echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
-#       - name: Install build dependencies
-#         run: |
-#           pip install build "pybind11[global]" scikit-build
-#           python -c "import skbuild"
+      - name: Install build dependencies
+        run: |
+          pip install build "pybind11[global]" scikit-build
+          python -c "import skbuild"
 
-#       - name: Build the wheel
-#         run: python -m build --wheel --outdir dist
+      - name: Build the wheel
+        run: python -m build --wheel --outdir dist
 
-#       - name: Upload wheels (Native)
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
-#           path: dist
+      - name: Upload wheels (Native)
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: dist
