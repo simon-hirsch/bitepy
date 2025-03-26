@@ -18,36 +18,36 @@ jobs:
       image: quay.io/pypa/manylinux_2_28_x86_64
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           submodules: false
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+    #   - name: Set up Python
+    #     uses: actions/setup-python@v4
+    #     with:
+    #       python-version: ${{ matrix.python-version }}
 
-    #   - name: Install Python development libraries
-    #     run: |
-    #       # Adjust the package name according to the Python version.
-    #       # For example, for Python 3.9:
-    #       # if [ "${{ matrix.python-version }}" = "3.9" ]; then
-    #       #     yum install -y python39-devel
-    #       # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
-    #       #     yum install -y python38-devel
-    #       # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
-    #       #     yum install -y python3.10-devel
-    #       # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
-    #       #     yum install -y python3.11-devel
-    #       # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
-    #       #     yum install -y python3.12-devel
-    #       # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
-    #       #     yum install -y python3.13-devel
-    #       # fi
-    #       yum install -y python3-devel
+      - name: Install Python development libraries
+        run: |
+          # Adjust the package name according to the Python version.
+          # For example, for Python 3.9:
+          # if [ "${{ matrix.python-version }}" = "3.9" ]; then
+          #     yum install -y python39-devel
+          # elif [ "${{ matrix.python-version }}" = "3.8" ]; then
+          #     yum install -y python38-devel
+          # elif [ "${{ matrix.python-version }}" = "3.10" ]; then
+          #     yum install -y python3.10-devel
+          # elif [ "${{ matrix.python-version }}" = "3.11" ]; then
+          #     yum install -y python3.11-devel
+          # elif [ "${{ matrix.python-version }}" = "3.12" ]; then
+          #     yum install -y python3.12-devel
+          # elif [ "${{ matrix.python-version }}" = "3.13" ]; then
+          #     yum install -y python3.13-devel
+          # fi
+          yum install -y python3-devel
 
       - name: Set up and install dependencies
         run: |
@@ -96,42 +96,45 @@ jobs:
           name: manylinux-wheels-py${{ matrix.python-version }}
           path: dist/*manylinux*.whl
 
-  build_native:
-    name: Build Wheels (macOS & Windows)
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-      fail-fast: false
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          submodules: false
+################
+# build macOS and Windows wheels
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+#   build_native:
+#     name: Build Wheels (macOS & Windows)
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [macos-latest, windows-latest]
+#         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+#       fail-fast: false
+#     steps:
+#       - name: Check out repository
+#         uses: actions/checkout@v4
+#         with:
+#           submodules: false
 
-      - name: Set C++17 Standard
-        run: |
-          echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
-          echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
-          echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
-          echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
+#       - name: Set up Python ${{ matrix.python-version }}
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: ${{ matrix.python-version }}
 
-      - name: Install build dependencies
-        run: |
-          pip install build "pybind11[global]" scikit-build
-          python -c "import skbuild"
+#       - name: Set C++17 Standard
+#         run: |
+#           echo "CXXFLAGS=-std=c++17" >> $GITHUB_ENV
+#           echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
+#           echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
+#           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
 
-      - name: Build the wheel
-        run: python -m build --wheel --outdir dist
+#       - name: Install build dependencies
+#         run: |
+#           pip install build "pybind11[global]" scikit-build
+#           python -c "import skbuild"
 
-      - name: Upload wheels (Native)
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: dist
+#       - name: Build the wheel
+#         run: python -m build --wheel --outdir dist
+
+#       - name: Upload wheels (Native)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+#           path: dist

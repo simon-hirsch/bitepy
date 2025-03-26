@@ -6,6 +6,9 @@
 
 #include "Simulation.h"
 
+using Simulation::Simulation;
+using SimulationParameters::SimulationParameters;
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(_bite, m) {
