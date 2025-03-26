@@ -76,8 +76,27 @@ set_target_properties(bite_lib PROPERTIES
     IMPORTED_IMPLIB "${SIM_IMPLIB_PATH}"
 )
 
+# Determine a short platform name.
+if(WIN32)
+    set(PLATFORM "win")
+elseif(APPLE)
+    set(PLATFORM "mac")
+elseif(UNIX)
+    set(PLATFORM "linux")
+else()
+    set(PLATFORM "unknown")
+endif()
+
+# Remove the default prefix to avoid a "lib" being added on some systems
+set_target_properties(_bite PROPERTIES PREFIX "")
+
+# Set the output name to include the system and Python version.
+# Python3_VERSION is provided by the Python3 package.
+string(REGEX MATCH "^[0-9]+\\.[0-9]+" PYTHON3_VERSION_SHORT ${Python3_VERSION})
+set_target_properties(_bite PROPERTIES OUTPUT_NAME "_bite_${PLATFORM}_py${PYTHON3_VERSION_SHORT}")
+
 # --- Build the Python wrapper ---
-pybind11_add_module(_bite
+add_library(_bite SHARED
     bite/_bite.cpp
 )
 
