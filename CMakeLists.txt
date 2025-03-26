@@ -69,10 +69,10 @@ else()  # Assume Linux
 endif()
 
 # Declare an imported target for your precompiled simulation library.
+add_library(bite_lib SHARED IMPORTED)
 set_target_properties(bite_lib PROPERTIES
     IMPORTED_LOCATION "${SIM_LIB_PATH}"
 )
-add_library(bite_lib SHARED IMPORTED)
 
 # --- Build the Python wrapper ---
 pybind11_add_module(_bite
