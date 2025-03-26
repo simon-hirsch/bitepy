@@ -1,6 +1,8 @@
 bite/cpp-source-submodule/*
 !bite/cpp-source-submodule/.git
 
+dist/*
+
 # Prerequisites
 *.d
 
@@ -19,15 +21,6 @@ bite/cpp-source-submodule/*
 # Precompiled Headers
 *.gch
 *.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
 
 # Compiled Static libraries
 *.lai
