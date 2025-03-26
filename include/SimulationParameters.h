@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace simulationparameters {
+
 class SimulationParameters {
 public:
     SimulationParameters();
@@ -83,5 +85,7 @@ private:
     struct Impl;
     Impl* impl;
 };
+
+} // namespace simulationparameters
 
 #endif // SIMULATIONPARAMETERS_H
