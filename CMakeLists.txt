@@ -62,7 +62,6 @@ else()  # Assume Linux
         elseif(Python3_VERSION_MINOR EQUAL 13)
             set(CP_TAG "3.13")
         endif()
-        endif()
         set(SIM_LIB_PATH "${PROJECT_SOURCE_DIR}/libs/_bite_linux_py${CP_TAG}.so")
     else()
         message(FATAL_ERROR "Unsupported Python version on Linux")
