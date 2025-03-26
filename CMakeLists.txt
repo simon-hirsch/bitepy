@@ -25,6 +25,7 @@ if(WIN32)
             set(CP_TAG "3.13")
         endif()
         set(SIM_LIB_PATH "${PROJECT_SOURCE_DIR}/libs/_bite_win_py${CP_TAG}.dll")
+        set(SIM_IMPLIB_PATH "${PROJECT_SOURCE_DIR}/libs/_bite_win_py${CP_TAG}.lib")
     else()
         message(FATAL_ERROR "Unsupported Python version on Windows")
     endif()
@@ -72,6 +73,7 @@ endif()
 add_library(bite_lib SHARED IMPORTED)
 set_target_properties(bite_lib PROPERTIES
     IMPORTED_LOCATION "${SIM_LIB_PATH}"
+    IMPORTED_IMPLIB "${SIM_IMPLIB_PATH}"
 )
 
 # --- Build the Python wrapper ---
