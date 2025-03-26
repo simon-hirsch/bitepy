@@ -4,7 +4,7 @@
 #include <pybind11/chrono.h>       // if you need chrono conversions
 // #include <pybind11/eigen.h>     // if you use Eigen, etc.
 
-#include "cpp-source-submodule/bite/src/Simulation.h"
+#include "Simulation.h"
 
 namespace py = pybind11;
 
