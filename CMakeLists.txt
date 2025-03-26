@@ -87,14 +87,6 @@ else()
     set(PLATFORM "unknown")
 endif()
 
-# Remove the default prefix to avoid a "lib" being added on some systems
-set_target_properties(_bite PROPERTIES PREFIX "")
-
-# Set the output name to include the system and Python version.
-# Python3_VERSION is provided by the Python3 package.
-string(REGEX MATCH "^[0-9]+\\.[0-9]+" PYTHON3_VERSION_SHORT ${Python3_VERSION})
-set_target_properties(_bite PROPERTIES OUTPUT_NAME "_bite_${PLATFORM}_py${PYTHON3_VERSION_SHORT}")
-
 # --- Build the Python wrapper ---
 add_library(_bite SHARED
     bite/_bite.cpp
@@ -110,6 +102,14 @@ set_target_properties(_bite
 target_include_directories(_bite PRIVATE
     "${PROJECT_SOURCE_DIR}/include"
 )
+
+# Remove the default prefix to avoid a "lib" being added on some systems
+set_target_properties(_bite PROPERTIES PREFIX "")
+
+# Set the output name to include the system and Python version.
+# Python3_VERSION is provided by the Python3 package.
+string(REGEX MATCH "^[0-9]+\\.[0-9]+" PYTHON3_VERSION_SHORT ${Python3_VERSION})
+set_target_properties(_bite PROPERTIES OUTPUT_NAME "_bite_${PLATFORM}_py${PYTHON3_VERSION_SHORT}")
 
 # Link the Python module with the precompiled simulation library.
 target_link_libraries(_bite
