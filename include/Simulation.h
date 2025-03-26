@@ -48,7 +48,7 @@ public:
     ~Simulation();
 
     // The public simulation parameters
-    SimulationParameters params;
+    simulationparameters::SimulationParameters params;
 
     // Main functions exposed to Python:
     void run(bool lastSet);
