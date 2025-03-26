@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "SimulationParameters.h"
+#include "ExecMarketOrder.h"
 
 // The public API is wrapped in a namespace.
 namespace simulation {
@@ -87,11 +88,11 @@ public:
 
     std::vector<DecisionRecord> getDecisionData() const;
     std::vector<PriceChart> getPriceData() const;
-    std::vector<std::string> getAccOrders() const;
-    std::vector<std::string> getExOrders() const;
-    std::vector<std::string> getForeOrders() const;
-    std::vector<std::string> getRemOrders() const;
-    std::vector<std::string> getBalOrders() const;
+    std::vector<LogAcceptedOrder> getAccOrders() const;
+    std::vector<ExecMarketOrder> getRemOrders() const;
+    std::vector<ExecMarketOrder> getExOrders() const;
+    std::vector<ForeLogOrder> getForeOrders() const;
+    std::vector<BalancingOrder> getBalOrders() const;
 
     // Clock and elapsed time functions
     void startClock();

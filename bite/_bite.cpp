@@ -125,7 +125,7 @@ PYBIND11_MODULE(_bite, m) {
         .def(py::init<>())
         // Expose 'params' as a property
         .def_property("params", 
-                      [](sim &self) -> SimulationParameters& { return self.params; },  // getter
+                      [](sim &self) -> simParams& { return self.params; },  // getter
                       [](sim &self, simParams &new_params) { self.params = new_params; }) // setter
         // method to run
         .def("run",
