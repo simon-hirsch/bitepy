@@ -236,11 +236,11 @@ PYBIND11_MODULE(_bite, m) {
                 pyRecord["hour"] = ForeLogOrder::epochToDateTime(record.hour);
                 pyRecord["reward"] = record.reward / 1000.0;
                 pyRecord["volume"] = record.volume / 10.0;
-                pyRecord["volume_previous"] = record.volumePrevious / 10.0;
+                pyRecord["volume_previous"] = record.volume<Previous / 10.0;
                 foreOrderList.append(pyRecord);
             }
 
-            py::list removedOrdersList;
+            py::list removedOrdersList;”
             for (const auto &record : self.getRemOrders()) {
                 // Create a Python dictionary to store the record
                 py::dict pyRecord;

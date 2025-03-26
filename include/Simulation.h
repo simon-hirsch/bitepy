@@ -6,9 +6,13 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include <iterator>
 
 #include "SimulationParameters.h"
 #include "ExecMarketOrder.h"
+#include "LogAcceptedOrder.h"
+#include "ForeLogOrder.h"
+#include "BalancingOrder.h"
 
 // The public API is wrapped in a namespace.
 namespace simulation {
