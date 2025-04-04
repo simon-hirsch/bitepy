@@ -119,24 +119,26 @@ target_link_libraries(_bite
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # --- Common Flags for GCC and Clang based compilers ---
     target_compile_options(_bite PRIVATE
-        -O3
-        -march=native
-        -funroll-loops
-        -flto
-        -std=c++17
+        -O3          # Optimization level
+        -funroll-loops # Loop unrolling optimization
+        -flto        # Link-time optimization (compile part)
+        -std=c++17   # Set C++ standard
     )
     target_link_options(_bite PRIVATE
-        -flto
+        -flto        # Link-time optimization (link part)
     )
+
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # --- MSVC Flags ---
     target_compile_options(_bite PRIVATE
-        /O2
-        /GL
-        /arch:AVX2  # Example; adjust based on your needs
+        /O2         # Optimization level (MSVC)
+        /GL         # Whole program optimization (LTO compile part for MSVC)
+        # /arch:AVX2  # Be careful with specific instruction sets, ensure compatibility if uncommented
     )
     target_link_options(_bite PRIVATE
-        /LTCG
+        /LTCG       # Link-time code generation (LTO link part for MSVC)
     )
 endif()
 
