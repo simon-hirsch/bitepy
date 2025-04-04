@@ -1,9 +1,38 @@
 cmake_minimum_required(VERSION 3.15)
 project(bite LANGUAGES CXX)
 
+# Find Python 3 interpreter and development components
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+
+# Get the pybind11 CMake directory using the Python interpreter
+# This ensures we find the pybind11 associated with the Python being used for the build
+execute_process(
+  COMMAND "${Python3_EXECUTABLE}" -m pybind11 --cmakedir
+  OUTPUT_VARIABLE pybind11_CMAKE_DIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  ERROR_QUIET # Optionally hide errors if pybind11 command fails
+  RESULT_VARIABLE pybind11_CMD_RESULT
+)
+
+if(NOT pybind11_CMD_RESULT EQUAL 0 OR NOT IS_DIRECTORY "${pybind11_CMAKE_DIR}")
+  message(FATAL_ERROR "pybind11 CMake directory not found using 'python -m pybind11 --cmakedir'. "
+                      "Ensure pybind11 is installed in the build environment (check pyproject.toml).")
+else()
+  message(STATUS "Found pybind11 CMake directory: ${pybind11_CMAKE_DIR}")
+  # Add the found directory to CMake's search path for modules
+  # list(APPEND CMAKE_MODULE_PATH "${pybind11_CMAKE_DIR}")
+  # Often, pointing CMAKE_PREFIX_PATH to the site-packages root works better for find_package config mode:
+  # Determine site-packages based on the found pybind11 CMake dir (may need adjustment)
+  get_filename_component(pybind11_SP_DIR "${pybind11_CMAKE_DIR}/../../.." ABSOLUTE)
+  message(STATUS "Adding pybind11 site-packages (?) to CMAKE_PREFIX_PATH: ${pybind11_SP_DIR}")
+  list(APPEND CMAKE_PREFIX_PATH "${pybind11_SP_DIR}")
+  # Alternatively, explicitly set pybind11_DIR (less common now but sometimes works)
+  # set(pybind11_DIR ${pybind11_CMAKE_DIR})
+endif()
+
 # --- Find Python and pybind11 ---
 # Request both the interpreter and development components.
-find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+# find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 find_package(pybind11 REQUIRED)
 
 # --- Set your desired C++ standard and compile options ---
