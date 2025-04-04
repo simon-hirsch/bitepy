@@ -1,24 +1,83 @@
 [build-system]
-requires = ["scikit-build", "pybind11[global]", "setuptools>=65", "ninja", "cmake>=3.15"]
-build-backend = "setuptools.build_meta"
+# Specifies that scikit-build-core is needed to build the package
+requires = [
+    "scikit-build-core>=0.7",  # Use scikit-build-core for CMake projects
+    "cmake>=3.18",             # Minimum CMake version required
+    "pybind11>=2.5.0",         # Often needed during build time for pybind11 projects
+    "numpy>=1.16.0",           # If headers are needed during build
+]
+build-backend = "scikit_build_core.build"
 
-[tool.cibuildwheel]
-# === Configure Python versions here ===
-# Uses CPython identifiers (cp<major><minor>)
-build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+[project]
+name = "bite"
+# Version from your setup.py. Update if needed.
+version = "0.3.1"
+authors = [
+  { name="David Schaurecker", email="david.schaurecker@gmail.com" },
+]
+description = "A Python wrapper for my C++ battery CID arbitrage simulation engine."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" } # Or use license-files below
 
-skip = [] # Optionally skip specific builds e.g. "*-musllinux_*"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License", # Assuming MIT license
+    "Operating System :: OS Independent", # Check if this is true, C++ might add dependencies
+    # Add others like: Intended Audience, Development Status, Topic
+    # e.g., "Development Status :: 4 - Beta",
+    # e.g., "Intended Audience :: Science/Research",
+    # e.g., "Topic :: Scientific/Engineering",
+]
 
-# Configure architectures
-archs = ["auto"] # Or specific like ["x86_64", "aarch64"]
+# Runtime dependencies from install_requires in setup.py
+dependencies = [
+    "numpy>=1.16.0",
+    "pandas>=0.24.0",
+    "matplotlib>=3.0.0",
+    "tqdm>=4.0.0",
+]
 
-# Environment variables can also be set here instead of the workflow file
-[tool.cibuildwheel.environment]
-CMAKE_CXX_STANDARD = "17"
-CMAKE_CXX_STANDARD_REQUIRED = "ON"
-CMAKE_CXX_FLAGS = "-std=c++17"
-BUILD_VERBOSE = "1"
+[project.urls]
+# Update these URLs to your actual project locations
+Homepage = "https://github.com/dschaurecker/bite" # Example URL
+Issues = "https://github.com/dschaurecker/bite/issues" # Example URL
+Documentation = "https://dschaurecker.github.io/bite/" # Example URL
 
-# Example for Linux specific settings (optional)
-# [tool.cibuildwheel.linux]
-# environment = { ... } # Linux-specific env vars
+[tool.scikit-build]
+# This section configures scikit-build-core
+# Often, minimal configuration is needed here if CMakeLists.txt is well-structured.
+
+# Specifies the minimum CMake version required by your project.
+cmake.minimumVersion = "3.18"
+
+# Tells scikit-build-core where to find the Python package source code.
+# If your Python code ('bite' directory) is directly under the project root
+# alongside pyproject.toml, use this:
+wheel.packages = ["bite"]
+
+# If your Python code is under a 'src' directory (e.g., ./src/bite),
+# scikit-build-core usually finds it automatically, or you can specify:
+# wheel.packages = ["src/bite"]
+# Choose the one that matches your project structure. If unsure, start without it
+# or use ["bite"] if the 'bite' folder is top-level.
+
+# Settings related to wheel building
+wheel.py-api = "cp38" # Specifies the Python C-API version, e.g., cp38 for Python 3.8+
+                      # Adjust if you target older versions or use limited API.
+
+# include_package_data=True and package_data from setup.py:
+# Data files should typically be handled by CMake's `install` commands
+# or listed in a MANIFEST.in file. Ensure your CMakeLists.txt installs
+# any necessary non-code files (like the contents of 'bins/*')
+# to the correct location within the package.
+# scikit-build-core will respect MANIFEST.in if present.
+
+# zip_safe=False is generally implied for packages with C extensions
+# and handled correctly by scikit-build-core when building wheels.

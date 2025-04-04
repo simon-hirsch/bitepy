@@ -207,7 +207,7 @@
 
 name: Build Wheels CI
 
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch] # push, pull_request, 
 
 jobs:
   # Combined job for macOS, Windows, and Linux (manylinux) builds using cibuildwheel
