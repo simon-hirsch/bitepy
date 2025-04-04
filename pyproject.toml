@@ -55,7 +55,7 @@ Documentation = "https://dschaurecker.github.io/bite/" # Example URL
 # Often, minimal configuration is needed here if CMakeLists.txt is well-structured.
 
 # Specifies the minimum CMake version required by your project.
-cmake.minimumVersion = "3.18"
+cmake.minimum.version = "3.18"
 
 # Tells scikit-build-core where to find the Python package source code.
 # If your Python code ('bite' directory) is directly under the project root
