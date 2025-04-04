@@ -138,16 +138,42 @@ jobs:
         python-version: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
       fail-fast: false
     steps:
-      # No need to set up SSH manually here if using the checkout action's capability
-      - name: Check out repository and submodules
+      # Step 1: Checkout main repository ONLY using default GITHUB_TOKEN
+      # No ssh-key, no submodules: recursive here.
+      - name: Check out main repository
         uses: actions/checkout@v4
+        # Ensure submodules are not checked out here automatically
         with:
-          submodules: recursive # Tell the action to handle submodules
-          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }} # Provide the private SSH key
+          submodules: false
 
-      # --- SSH setup steps are removed ---
+      # Step 2: Set up SSH access for the private submodule
+      # Use the NEW private key you generated (e.g., github_actions_bite_deploy)
+      # Stored in the SUBMODULE_DEPLOY_KEY secret
+      - name: Set up SSH access for private submodule
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          # Note: using id_ed25519 as the filename here for simplicity,
+          # ssh will pick it up automatically. Or use the specific new filename.
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+        shell: bash
 
-      # --- git submodule sync/update steps are removed (handled by checkout) ---
+      # Step 3: Configure Git to use SSH instead of HTTPS for GitHub
+      # This ensures the submodule update uses the SSH key we just set up
+      - name: Configure Git to use SSH for github.com
+        run: git config --global url."git@github.com:".insteadOf "https://github.com/"
+        shell: bash
+
+      # Step 4: Initialize and update submodules manually
+      # This will now use the SSH key via the URL rewrite
+      - name: Initialize submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+        shell: bash
+
+      # --- Rest of your build steps ---
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -160,17 +186,17 @@ jobs:
           echo "CMAKE_CXX_FLAGS=-std=c++17" >> $GITHUB_ENV
           echo "CMAKE_CXX_STANDARD=17" >> $GITHUB_ENV
           echo "CMAKE_CXX_STANDARD_REQUIRED=ON" >> $GITHUB_ENV
-        shell: bash # Explicitly setting shell for clarity, often defaults correctly
+        shell: bash
 
       - name: Install build dependencies
         run: |
           pip install build "pybind11[global]" scikit-build
           python -c "import skbuild"
-        shell: bash # Explicitly setting shell
+        shell: bash
 
       - name: Build the wheel
         run: python -m build --wheel --outdir dist
-        shell: bash # Explicitly setting shell
+        shell: bash
 
       - name: Upload wheels (Native)
         uses: actions/upload-artifact@v4
