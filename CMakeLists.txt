@@ -16,20 +16,20 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # We'll call the library "_bite" so that scikit-build produces _bite.<ext> 
 pybind11_add_module(_bite
     bite/_bite.cpp
-    bite/cpp-source-submodule/bite/src/Simulation.cpp
-    bite/cpp-source-submodule/bite/src/GeneralStageProblem.cpp
-    bite/cpp-source-submodule/bite/src/LimitOrderQueue.cpp
-    bite/cpp-source-submodule/bite/src/LimitOrder.cpp
-    bite/cpp-source-submodule/bite/src/MarketOrder.cpp
-    bite/cpp-source-submodule/bite/src/LogLimitOrder.cpp
-    bite/cpp-source-submodule/bite/src/ExecMarketOrder.cpp
-    bite/cpp-source-submodule/bite/src/LogAcceptedOrder.cpp
-    bite/cpp-source-submodule/bite/src/OrderBook.cpp
-    bite/cpp-source-submodule/bite/src/ForeLogOrder.cpp
-    bite/cpp-source-submodule/bite/src/SimulationParameters.cpp
-    bite/cpp-source-submodule/bite/src/Util.cpp
-    bite/cpp-source-submodule/bite/src/MILPStats.cpp
-    bite/cpp-source-submodule/bite/src/BalancingOrder.cpp
+    bite/cpp_source_submodule/bite/src/Simulation.cpp
+    bite/cpp_source_submodule/bite/src/GeneralStageProblem.cpp
+    bite/cpp_source_submodule/bite/src/LimitOrderQueue.cpp
+    bite/cpp_source_submodule/bite/src/LimitOrder.cpp
+    bite/cpp_source_submodule/bite/src/MarketOrder.cpp
+    bite/cpp_source_submodule/bite/src/LogLimitOrder.cpp
+    bite/cpp_source_submodule/bite/src/ExecMarketOrder.cpp
+    bite/cpp_source_submodule/bite/src/LogAcceptedOrder.cpp
+    bite/cpp_source_submodule/bite/src/OrderBook.cpp
+    bite/cpp_source_submodule/bite/src/ForeLogOrder.cpp
+    bite/cpp_source_submodule/bite/src/SimulationParameters.cpp
+    bite/cpp_source_submodule/bite/src/Util.cpp
+    bite/cpp_source_submodule/bite/src/MILPStats.cpp
+    bite/cpp_source_submodule/bite/src/BalancingOrder.cpp
 )
 
 set_target_properties(_bite
