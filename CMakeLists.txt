@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(bite LANGUAGES CXX)
 
 # Find Python 3 interpreter and development components
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
 # Get the pybind11 CMake directory using the Python interpreter
 # This ensures we find the pybind11 associated with the Python being used for the build
@@ -32,7 +32,6 @@ endif()
 
 # --- Find Python and pybind11 ---
 # Request both the interpreter and development components.
-# find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 find_package(pybind11 REQUIRED)
 
 # --- Set your desired C++ standard and compile options ---
