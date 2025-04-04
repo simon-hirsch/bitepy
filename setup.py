@@ -3,7 +3,7 @@ from skbuild import setup
 
 setup(
     name="bite",
-    version="0.3.0",
+    version="0.3.1",
     author="David Schaurecker",
     author_email="david.schaurecker@gmail.com",
     description="A Python wrapper for my C++ battery CID arbitrage simulation engine.",
@@ -20,5 +20,5 @@ setup(
     zip_safe=False,
     include_package_data=True,
     packages=["bite"],
-    package_data={"bite": ["bins/*"]},
+    #package_data={"bite": ["bins/*"]},
 )

@@ -2,14 +2,13 @@
 #include <pybind11/stl.h>          // for automatic conversion of STL containers
 // #include <pybind11/numpy.h>        // if you need NumPy arrays
 #include <pybind11/chrono.h>       // if you need chrono conversions
-// #include <pybind11/eigen.h>     // if you use Eigen, etc.
 
 #include "Simulation.h"
 
 namespace py = pybind11;
 
-using simParams = simulationparameters::SimulationParameters;
-using sim = simulation::Simulation;
+using simParams = SimulationParameters;
+using sim = Simulation;
 
 PYBIND11_MODULE(_bite, m) {
     m.doc() = "pybind11 wrapper for the Simulation C++ code";
