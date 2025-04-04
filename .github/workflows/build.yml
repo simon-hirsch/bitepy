@@ -239,37 +239,20 @@ jobs:
         with:
           submodules: false
 
-      # Step 2: Set up SSH access for the private submodule
-      # Assumes SUBMODULE_DEPLOY_KEY secret has the private key with read access to the submodule.
-      # Uses PowerShell for better cross-platform compatibility in script block.
-      - name: Set up SSH access for private submodule
-        shell: pwsh
+      # Step 2: Set up SSH access for private submodule (Bash version)
+      - name: Set up SSH access for private submodule (Bash)
+        shell: bash
         run: |
-          $sshPath = Join-Path $env:HOME ".ssh" # Use $env:HOME for reliability on all runners
-          if (-not (Test-Path $sshPath)) { New-Item -ItemType Directory -Path $sshPath | Out-Null }
-          $sshKeyPath = Join-Path $sshPath "id_ed25519" # Standard name Git/SSH look for
-          # Write key, ensuring correct encoding and no extra newlines
-          "${{ secrets.SUBMODULE_DEPLOY_KEY }}".Replace("`r", "") | Out-File -Encoding ASCII -NoNewline -Force $sshKeyPath
-          # Set permissions - critical on Linux/macOS, less so but harmless on Windows for Git Bash
-          if ($env:RUNNER_OS -ne 'Windows') { chmod 600 $sshKeyPath }
-          Write-Host "SSH key written to $sshKeyPath"
-          # Add github.com to known hosts idempotently (avoids duplicate entries)
-          $knownHostsPath = Join-Path $sshPath "known_hosts"
-          try {
-              $keyScanResult = ssh-keyscan github.com 2>$null # Suppress stderr messages
-              if ($keyScanResult) {
-                  if (-not (Test-Path $knownHostsPath) -or ((Get-Content $knownHostsPath -Raw) -notlike "*$($keyScanResult.Split(' ')[1])*")) {
-                      Write-Host "Adding github.com to known_hosts"
-                      $keyScanResult | Out-File -Encoding ASCII -Append $knownHostsPath
-                  } else {
-                      Write-Host "github.com host key already in known_hosts"
-                  }
-              } else {
-                  Write-Warning "ssh-keyscan for github.com failed."
-              }
-          } catch {
-              Write-Warning "ssh-keyscan command failed: $_"
-          }
+          mkdir -p ~/.ssh
+          # Decode if Base64 encoded, otherwise echo directly. Assuming direct key content for now.
+          echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          echo "SSH key setup complete."
+          # Add a verification step: Try to load the key fingerprint
+          echo "Verifying key load..."
+          ssh-keygen -l -f ~/.ssh/id_ed25519 || (echo "ERROR: Failed to load key fingerprint. Key format in secret is likely invalid." && exit 1)
+          echo "Key loaded successfully by ssh-keygen."
 
       # Step 3: Configure Git to use SSH instead of HTTPS for GitHub
       # Using bash shell (available on all runners via Git Bash on Windows)
