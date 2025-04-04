@@ -39,7 +39,8 @@ If you want to clone the repository, do so at depth 1 with `git clone --depth 1 
 
 ## License
 
-MIT??
+Licensed under MIT License.
+See [License](https://github.com/dschaurecker/bite/blob/main/LICENSE) for the full license text.
 
 ## Author
 

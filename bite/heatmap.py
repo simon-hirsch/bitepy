@@ -1,3 +1,13 @@
+######################################################################
+# Copyright (C) 2025 ETH Zurich
+# BITE: A Battery Intraday Trading Engine
+# Bits to Energy Lab - Chair of Information Management - ETH Zurich
+#
+# Author: David Schaurecker
+#
+# Licensed under MIT License, see https://opensource.org/license/mit
+######################################################################
+
 import datetime as dt
 import pandas as pd
 import numpy as np
