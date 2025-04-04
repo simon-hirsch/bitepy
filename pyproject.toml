@@ -1,26 +1,11 @@
-#[build-system]
-#requires = [
-#  "setuptools>=65",
-#  "wheel",
-#  "scikit-build",
-#  "cmake>=3.15",
-#  "pybind11[global]",
-#  "ninja"
-#]
-#build-backend = "setuptools.build_meta"
-
-
 [build-system]
-requires = ["scikit-build", "pybind11[global]", "setuptools>=65", "ninja", "cmake>=3.15"] # Add other build deps
-build-backend = "setuptools.build_meta" # Or appropriate backend
+requires = ["scikit-build", "pybind11[global]", "setuptools>=65", "ninja", "cmake>=3.15"]
+build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 # === Configure Python versions here ===
 # Uses CPython identifiers (cp<major><minor>)
-# Matches your original matrix comment: ["3.8"] #, "3.9", "3.10", "3.11", "3.12", "3.13"]
-build = ["cp38-*"]
-# To build for more versions uncomment/add them:
-# build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
 
 skip = [] # Optionally skip specific builds e.g. "*-musllinux_*"
 
