@@ -4,6 +4,11 @@ project(bite LANGUAGES CXX)
 # Find Python 3 interpreter and development components
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
+message(STATUS "Found Python3 Interpreter: ${Python3_EXECUTABLE}")
+# Note: These might be empty if CMake uses imported targets primarily
+message(STATUS "Found Python3 Libraries: ${Python3_LIBRARIES}")
+message(STATUS "Found Python3 Include Dirs: ${Python3_INCLUDE_DIRS}")
+
 # Get the pybind11 CMake directory using the Python interpreter
 # This ensures we find the pybind11 associated with the Python being used for the build
 execute_process(
