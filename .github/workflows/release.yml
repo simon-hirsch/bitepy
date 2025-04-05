@@ -172,6 +172,15 @@ jobs:
       contents: write # Need write access to create release and upload assets
 
     steps:
+      # STEP 1: Checkout the repository code FIRST
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Or latest version
+        with:
+          # Fetch all history so --generate-notes can determine changes
+          # since the last release.
+          fetch-depth: 0
+
+      # STEP 2: Download artifacts (can happen after checkout)
       - name: Download all wheel artifacts
         uses: actions/download-artifact@v4
         with:
@@ -184,9 +193,9 @@ jobs:
 
       - name: Create GitHub Release and Upload Assets
         env:
-          # GITHUB_TOKEN is automatically provided by Actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Get the tag name from the triggering event
+          # Ensure this workflow is triggered by a tag push, otherwise
+          # github.ref_name might be 'main' or a branch name.
           TAG_NAME: ${{ github.ref_name }}
         run: |
           echo "Creating release for tag ${TAG_NAME}"

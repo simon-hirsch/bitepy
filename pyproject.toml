@@ -9,7 +9,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "bite"
-version = "0.4.1"
+version = "0.4.2"
 authors = [
   { name="David Schaurecker", email="david.schaurecker@gmail.com" },
 ]
