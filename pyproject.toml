@@ -3,7 +3,7 @@
 requires = [
     "scikit-build-core>=0.7",  # Use scikit-build-core for CMake projects
     "pybind11>=2.5.0",         # Often needed during build time for pybind11 projects
-    "numpy>=1.16.0",           # If headers are needed during build
+    # "numpy>=1.16.0",           # If headers are needed during build
 ]
 build-backend = "scikit_build_core.build"
 
