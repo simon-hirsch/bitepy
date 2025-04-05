@@ -283,8 +283,6 @@ jobs:
       # Configuration (Python versions, archs, env vars) should be read from pyproject.toml
       # The specific platform (linux, macos, windows) is passed from the matrix include definition
       - name: Build wheels for ${{ matrix.platform }}
-        env:
-          CIBW_BEFORE_BUILD: "pip install numpy --force-reinstall --no-cache-dir"
         run: cibuildwheel --platform ${{ matrix.platform }}
         # IMPORTANT: Make sure your pyproject.toml has the [tool.cibuildwheel] section
         # configured correctly for all platforms, including Python versions ('build=' key),
