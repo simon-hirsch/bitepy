@@ -9,7 +9,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "bite"
-version = "0.4.0"
+version = "0.4.1"
 authors = [
   { name="David Schaurecker", email="david.schaurecker@gmail.com" },
 ]
@@ -67,7 +67,7 @@ wheel.packages = ["bite"]
 # or use ["bite"] if the 'bite' folder is top-level.
 
 # Settings related to wheel building
-wheel.py-api = "cp38" # Specifies the Python C-API version, e.g., cp38 for Python 3.8+
+# wheel.py-api = "cp38" # Specifies the Python C-API version, e.g., cp38 for Python 3.8+
 # Adjust if you target older versions or use limited API.
 
 # include_package_data=True and package_data from setup.py:
