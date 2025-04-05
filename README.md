@@ -35,7 +35,7 @@ Our [Documentation](https://dschaurecker.github.io/bite/) gives a detailed overv
 ## Contribution
 
 We are happy about all forms of feedback and would like to hear from you, if you would like to contribute as well, or are interested in the underlying C++ source code of your simulation engine.
-If you want to clone the repository, do so at depth 1 with `git clone --depth 1 ...`, to avoid importing different versions of the C++ binary libaries.
+If you want to clone and contribute to the repository, first `pip install bite` and then clone the repository to have access to the compiled binaries while being able to edit the Python source code.
 
 ## License
 
