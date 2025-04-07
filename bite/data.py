@@ -27,6 +27,35 @@ class Data:
         """Initialize a Data instance."""
         pass
 
+    def _load_csv(self, file_path):
+        """
+        Load a single zipped CSV file with specified dtypes.
+        """
+        df = pd.read_csv(
+            file_path,
+            compression="zip",
+            dtype={
+                "id": np.int64,
+                "initial": np.int64,
+                "side": "string",
+                "start": "string",
+                "transaction": "string",
+                "validity": "string",
+                "price": np.float64,
+                "quantity": np.float64,
+            },
+        )
+        df.rename(columns={"Unnamed: 0": "id"}, inplace=True)
+        ids = df["id"].to_numpy(dtype=np.int64).tolist()
+        initials = df["initial"].to_numpy(dtype=np.int64).tolist()
+        sides = df["side"].to_numpy(dtype="str").tolist()
+        starts = df["start"].to_numpy(dtype="str").tolist()
+        transactions = df["transaction"].to_numpy(dtype="str").tolist()
+        validities = df["validity"].to_numpy(dtype="str").tolist()
+        prices = df["price"].to_numpy(dtype=np.float64).tolist()
+        quantities = df["quantity"].to_numpy(dtype=np.float64).tolist()
+        return ids, initials, sides, starts, transactions, validities, prices, quantities
+
     def _read_id_table_2020(self, timestamp, datapath):
         year = timestamp.strftime("%Y")
         month = timestamp.strftime("%m")
@@ -203,7 +232,7 @@ class Data:
 
     def parse_market_data(self, start_date_str: str, end_date_str: str, marketdatapath: str, savepath: str, verbose: bool = True):
         """
-        Parse EPEX market data between two dates and save processed CSV files.
+        Parse EPEX market data between two dates and save processed zipped CSV files.
 
         This method sequentially loads and processes the raw market data files (zipped order book data)
         provided by EPEX. It converts the raw data into a sorted CSV file for each day in UTC time format.
@@ -265,21 +294,22 @@ class Data:
                 save_date = dt1.date()
                 group = grouped.get_group(save_date)
                 daily_filename = f"{savepath}orderbook_{save_date}.csv"
-                group.drop(columns='transaction_date').sort_values(by='transaction').fillna("").to_csv(daily_filename)
+                compression_options = dict(method='zip', archive_name=f'{daily_filename.split("/")[-1]}')
+                group.drop(columns='transaction_date').sort_values(by='transaction').fillna("").to_csv(f'{daily_filename}.zip', compression=compression_options)
                 pbar.update(1)
         
         print("\nWriting CSV data completed.")
 
     def create_bins_from_csv(self, csv_list: list, save_path: str, verbose: bool = True):
         """
-        Convert CSV files of pre-processed order book data into binary files.
+        Convert zipped CSV files of pre-processed order book data into binary files.
 
-        This method sequentially loads each previously generated CSV file, converts it to a binary format using the C++ simulation
+        This method sequentially loads each previously generated zipped CSV file, converts it to a binary format using the C++ simulation
         extension, and saves the binary file in the specified directory. Binary files allow for much (10x) quicker loading
         of the data at runtime.
 
         Args:
-            csv_list (list): List of file paths to the CSV files containing pre-processed order book data.
+            csv_list (list): List of file paths to the zipped CSV files containing pre-processed order book data.
             save_path (str): Directory path where the binary files should be saved. The binary files will use the same base name as the CSV files.
             verbose (bool, optional): If True, print progress messages. Defaults to True.
         """
@@ -290,8 +320,20 @@ class Data:
         with tqdm(total=len(csv_list), desc="Writing Binaries", ncols=100, disable=not verbose) as pbar:
             for csv_file_path in csv_list:
                 filename = os.path.basename(csv_file_path)
-                bin_file_path = os.path.join(save_path, filename.replace(".csv", ".bin"))
+                bin_file_path = os.path.join(save_path, filename.replace(".csv.zip", ".bin"))
                 pbar.set_description(f"Currently saving binary {bin_file_path.split('/')[-1]} ... ")
-                _sim.writeOrderBinFromCSV(csv_file_path, bin_file_path)
+                ids, initials, sides, starts, transactions, validities, prices, quantities = self._load_csv(csv_file_path)
+                _sim.writeOrderBinFromPandas(
+                    bin_file_path,
+                    ids,
+                    initials,
+                    sides,
+                    starts,
+                    transactions,
+                    validities,
+                    prices,
+                    quantities,
+                )
                 pbar.update(1)
+
         print("\nWriting Binaries completed.")

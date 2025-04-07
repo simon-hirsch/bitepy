@@ -294,10 +294,10 @@ class Simulation:
                 - price_record: CID price data over the simulation duration.
                 - accepted_orders: Limit orders accepted by the RI.
                 - executed_orders: Orders sent to the exchange by the RI.
-                - forecast_orders: Orders virtually traded against the forecast.
                 - killed_orders: Orders that were missed at the exchange.
-                - balancing_orders: Orders that would have incurred payments to the TSO.
         """
+        # - forecast_orders: Orders virtually traded against the forecast.
+        # - balancing_orders: Orders that would have incurred payments to the TSO.
         decision_record, price_record, accepted_orders, executed_orders, forecast_orders, killed_orders, balancing_orders = self._sim_cpp.getLogs()
         decision_record = pd.DataFrame(decision_record)
         price_record = pd.DataFrame(price_record)
@@ -337,9 +337,9 @@ class Simulation:
             "price_record": pd.DataFrame(price_record, index=None),
             "accepted_orders": pd.DataFrame(accepted_orders, index=None),
             "executed_orders": pd.DataFrame(executed_orders, index=None),
-            "forecast_orders": pd.DataFrame(forecast_orders, index=None),
+            # "forecast_orders": pd.DataFrame(forecast_orders, index=None), # removed for later versions of the code
             "killed_orders": pd.DataFrame(killed_orders, index=None),
-            "balancing_orders": pd.DataFrame(balancing_orders, index=None),
+            # "balancing_orders": pd.DataFrame(balancing_orders, index=None), # removed for later versions of the code
         }
         return logs
     
