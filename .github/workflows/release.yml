@@ -133,35 +133,35 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
           # skip_existing: true # Optional: uncomment to prevent errors if version already exists
 
-  # --- Job to Publish to PyPI (Optional - Uncomment and configure carefully) ---
-  # publish-pypi:
-  #   name: Publish to PyPI
-  #   needs: build_wheels # Run after wheels are built
-  #   runs-on: ubuntu-latest
-  #   # Define environment linked to PyPI trusted publishing config
-  #   environment:
-  #     name: pypi # MUST match the environment name configured in PyPI trusted publishing
-  #     url: https://pypi.org/p/bitepy # Link to your project on PyPI (replace 'bite' if needed)
-  #   permissions:
-  #     id-token: write # Allow workflow to get OIDC ID token for PyPI
-  #     contents: read
-  #   # Condition: Only run on tags that DO NOT contain a hyphen (e.g., v1.0.0, not v1.0.0-rc1)
-  #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && !contains(github.ref_name, '-')
+  #--- Job to Publish to PyPI (Optional - Uncomment and configure carefully) ---
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build_wheels # Run after wheels are built
+    runs-on: ubuntu-latest
+    # Define environment linked to PyPI trusted publishing config
+    environment:
+      name: pypi # MUST match the environment name configured in PyPI trusted publishing
+      url: https://pypi.org/p/bitepy # Link to your project on PyPI (replace 'bite' if needed)
+    permissions:
+      id-token: write # Allow workflow to get OIDC ID token for PyPI
+      contents: read
+    # Condition: Only run on tags that DO NOT contain a hyphen (e.g., v1.0.0, not v1.0.0-rc1)
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && !contains(github.ref_name, '-')
 
-  #   steps:
-  #     - name: Download all wheel artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         pattern: wheels-*
-  #         path: dist
-  #         merge-multiple: true
+    steps:
+      - name: Download all wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
 
-  #     - name: List downloaded wheels
-  #       run: ls -R dist/
+      - name: List downloaded wheels
+        run: ls -R dist/
 
-  #     - name: Publish package to PyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
-  #       # repository_url defaults to PyPI, no need to set it here
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # repository_url defaults to PyPI, no need to set it here
 
   # --- Job to Create GitHub Release ---
   create-github-release:
