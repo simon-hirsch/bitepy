@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2025 ETH Zurich
-// BITE: A Battery Intraday Trading Engine
+// BitePy: A Python Battery Intraday Trading Engine
 // Bits to Energy Lab - Chair of Information Management - ETH Zurich
 //
 // Author: David Schaurecker
