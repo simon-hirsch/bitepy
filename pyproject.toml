@@ -56,13 +56,12 @@ Documentation = "https://dschaurecker.github.io/bitepy/" # Example URL
 # Specifies the minimum CMake version required by your project.
 cmake.version = ">=3.18"
 
-# set the dir name to the package code
-wheel.package-dir = {"bitepy" = "bite"}
-
-# Tells scikit-build-core where to find the Python package source code.
-# If your Python code ('bite' directory) is directly under the project root
-# alongside pyproject.toml, use this:
-wheel.packages = ["bitepy"]
+# A list of packages to auto-copy into the wheel. If this is not set, it will
+# default to the first of ``src/<package>``, ``python/<package>``, or
+# ``<package>`` if they exist.  The prefix(s) will be stripped from the package
+# name inside the wheel. If a dict, provides a mapping of package name to source
+# directory.
+wheel.packages = {"bitepy" = "bite"}
 
 # If your Python code is under a 'src' directory (e.g., ./src/bite),
 # scikit-build-core usually finds it automatically, or you can specify:
