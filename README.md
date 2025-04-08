@@ -6,7 +6,7 @@
 
 [![Version](https://img.shields.io/github/v/tag/dschaurecker/bitepy?label=version&style=flat)](https://github.com/dschaurecker/bitepy/releases)
 
-A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd, Schaurecker et al. (2025)) for details on the method and visualizations of the results.
+A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd, Schaurecker & Wozabal et al. (2025)) for details on the method and visualizations of the results.
 
 
 ## Features
