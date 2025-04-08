@@ -8,10 +8,10 @@ requires = [
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "bite"
-version = "0.4.2"
+name = "bitepy"
+version = "0.4.3"
 authors = [
-  { name="David Schaurecker", email="david.schaurecker@gmail.com" },
+  { name="David Schaurecker", email="dschaurecker@gmail.com" },
 ]
 description = "A Python wrapper for my C++ battery CID arbitrage simulation engine."
 readme = "README.md"
@@ -28,6 +28,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License", # Assuming MIT license
     "Operating System :: OS Independent", # Check if this is true, C++ might add dependencies
+    "Development Status :: 4 - Beta",
     # Add others like: Intended Audience, Development Status, Topic
     # e.g., "Development Status :: 4 - Beta",
     # e.g., "Intended Audience :: Science/Research",
@@ -44,9 +45,9 @@ dependencies = [
 
 [project.urls]
 # Update these URLs to your actual project locations
-Homepage = "https://github.com/dschaurecker/bite" # Example URL
-Issues = "https://github.com/dschaurecker/bite/issues" # Example URL
-Documentation = "https://dschaurecker.github.io/bite/" # Example URL
+Homepage = "https://github.com/dschaurecker/bitepy" # Example URL
+Issues = "https://github.com/dschaurecker/bitepy/issues" # Example URL
+Documentation = "https://dschaurecker.github.io/bitepy/" # Example URL
 
 [tool.scikit-build]
 # This section configures scikit-build-core

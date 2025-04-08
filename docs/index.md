@@ -14,11 +14,11 @@ This is a Python high-frequency intraday trading engine for simulating the rolli
 
 ## Installation
 
-Bite requires Python 3.8+ to run.
+BitePy requires Python 3.8+ to run.
 The package can be easily installed via
 
 ```sh
-pip install bite
+pip install bitepy
 ```
 
 ## Package
@@ -41,6 +41,6 @@ Our `Results` class, gives users some tools to visualize the final schedule, as 
 
 ## Tutorial
 
-We give concrete usage examples and explanations to all the classes discussed above in our [Jupyter Notebook](https://github.com/dschaurecker/bite/blob/main/notebooks/package_tutorial.ipynb).
+We give concrete usage examples and explanations to all the classes discussed above in our [Jupyter Notebook](https://github.com/dschaurecker/bitepy/blob/main/notebooks/package_tutorial.ipynb).
 
 To reduce data-loading times, we encourage users to follow the flow of first creating LOB data CSV files with our `Data` class, but then creating LOB data binaries with our `Simulation` class, before running any simulations. Alternatively, users can also directly pass LOB Pandas dataframes to the simulation, at the cost of additional data-loading times.

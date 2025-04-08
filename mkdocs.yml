@@ -1,5 +1,5 @@
-site_name: "BITE - Battery Intraday Trading Engine"
-site_url: "https://dschaurecker.github.io/bite/"
+site_name: "BitePy - A Python Battery Intraday Trading Engine"
+site_url: "https://dschaurecker.github.io/bitepy/"
 
 nav:
   - Home: index.md
@@ -7,9 +7,9 @@ nav:
   - Simulation: simulation.md
   - Results Postprocessing: results.md
   - About: about.md
-  - Issues [Github] : "https://github.com/dschaurecker/bite/issues"
-  - Source [Github] : "https://github.com/dschaurecker/bite/tree/main"
-  - Licence [Github] : "https://github.com/dschaurecker/bite/blob/main/LICENSE"
+  - Issues [Github] : "https://github.com/dschaurecker/bitepy/issues"
+  - Source [Github] : "https://github.com/dschaurecker/bitepy/tree/main"
+  - Licence [Github] : "https://github.com/dschaurecker/bitepy/blob/main/LICENSE"
 
 theme:
   name: material

@@ -4,7 +4,7 @@
 
 ## _A Battery Intraday Trading Engine_
 
-[![Version](https://img.shields.io/github/v/tag/dschaurecker/bite?label=version&style=flat)](https://github.com/dschaurecker/bite/releases)
+[![Version](https://img.shields.io/github/v/tag/dschaurecker/bitepy?label=version&style=flat)](https://github.com/dschaurecker/bitepy/releases)
 
 A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd, Schaurecker et al. (2025)) for details on the method and visualizations of the results.
 
@@ -20,26 +20,26 @@ A Python high-frequency intraday trading engine for simulating the rolling intri
 
 ## Installation
 
-Bite requires Python 3.8+ to run.
+BitePy requires Python 3.8+ to run.
 The package can be easily installed via
 
 ```sh
-pip install bite
+pip install bitepy
 ```
 
 ## Documentation and Tutorial
 
-Our [Documentation](https://dschaurecker.github.io/bite/) gives a detailed overview on our package's features and will be updated continuously. We also provide a simple [Tutorial](https://github.com/dschaurecker/bite/blob/main/notebooks/package_tutorial.ipynb) in form of a Jupyter Notebook, guiding users through our simulation process.
+Our [Documentation](https://dschaurecker.github.io/bitepy/) gives a detailed overview on our package's features and will be updated continuously. We also provide a simple [Tutorial](https://github.com/dschaurecker/bitepy/blob/main/notebooks/package_tutorial.ipynb) in form of a Jupyter Notebook, guiding users through our simulation process.
 
 ## Contribution
 
 We are happy about all forms of feedback and would like to hear from you, if you would like to contribute as well, or are interested in the underlying C++ source code of your simulation engine.
-If you want to clone and contribute to the repository, first `pip install bite` and then clone the repository to have access to the compiled binaries while being able to edit the Python source code.
+If you want to clone and contribute to the repository, first `pip install bitepy` and then clone the repository to have access to the compiled binaries while being able to edit the Python source code.
 
 ## License
 
 Licensed under MIT License.
-See [License](https://github.com/dschaurecker/bite/blob/main/LICENSE) for the full license text.
+See [License](https://github.com/dschaurecker/bitepy/blob/main/LICENSE) for the full license text.
 
 ## Author
 

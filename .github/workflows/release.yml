@@ -108,7 +108,7 @@ jobs:
     # Define environment linked to TestPyPI trusted publishing config
     environment:
       name: test-pypi # MUST match the environment name configured in TestPyPI trusted publishing
-      url: https://test.pypi.org/p/bite # Link to your project on TestPyPI (replace 'bite' if needed)
+      url: https://test.pypi.org/p/bitepy # Link to your project on TestPyPI (replace 'bite' if needed)
     permissions:
       id-token: write # Allow workflow to get OIDC ID token for PyPI
       contents: read # Allow checkout if needed (though not strictly required by pypi-publish)
@@ -141,7 +141,7 @@ jobs:
   #   # Define environment linked to PyPI trusted publishing config
   #   environment:
   #     name: pypi # MUST match the environment name configured in PyPI trusted publishing
-  #     url: https://pypi.org/p/bite # Link to your project on PyPI (replace 'bite' if needed)
+  #     url: https://pypi.org/p/bitepy # Link to your project on PyPI (replace 'bite' if needed)
   #   permissions:
   #     id-token: write # Allow workflow to get OIDC ID token for PyPI
   #     contents: read
