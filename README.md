@@ -1,9 +1,8 @@
-# BITE
+<p align="center" width="100%">
+<img src="docs/assets/bitepy_logo_text.png" width="300">
+</p>
 
 ## _A Battery Intraday Trading Engine_
-
-
-<img src="docs/assets/bitepy_logo_text.png" width="30">
 
 [![Version](https://img.shields.io/github/v/tag/dschaurecker/bite?label=version&style=flat)](https://github.com/dschaurecker/bite/releases)
 
