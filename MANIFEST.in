@@ -5,18 +5,18 @@ include README.md
 include LICENSE
 
 # Include all Python modules and packages
-recursive-include bite *.py
+recursive-include bitepy *.py
 
 # exclude C++ source and header files
-exclude bite/cpp-source-submodule/bite/src *.cpp *.h *.o
+exclude bitepy/cpp-source-submodule/bite/src *.cpp *.h *.o
 
-include bite/_bite*.so
+include bitepy/_bite*.so
 
 # Include data files, if any
-# recursive-include bite/data *.json *.csv
+# recursive-include bitepy/data *.json *.csv
 
 # Exclude build artifacts
 exclude *.pyc
 exclude __pycache__/
-prune bite/build
-prune bite/dist
+prune bitepy/build
+prune bitepy/dist

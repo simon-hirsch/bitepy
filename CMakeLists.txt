@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(bite LANGUAGES CXX)
+project(bitepy LANGUAGES CXX)
 
 # Find Python 3 interpreter and development components
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
@@ -48,21 +48,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # --- Add your library/executable, in this case a Python extension module ---
 # We'll call the library "_bite" so that scikit-build produces _bite.<ext> 
 pybind11_add_module(_bite
-    bite/_bite.cpp
-    bite/cpp_source_submodule/bite/src/Simulation.cpp
-    bite/cpp_source_submodule/bite/src/GeneralStageProblem.cpp
-    bite/cpp_source_submodule/bite/src/LimitOrderQueue.cpp
-    bite/cpp_source_submodule/bite/src/LimitOrder.cpp
-    bite/cpp_source_submodule/bite/src/MarketOrder.cpp
-    bite/cpp_source_submodule/bite/src/LogLimitOrder.cpp
-    bite/cpp_source_submodule/bite/src/ExecMarketOrder.cpp
-    bite/cpp_source_submodule/bite/src/LogAcceptedOrder.cpp
-    bite/cpp_source_submodule/bite/src/OrderBook.cpp
-    bite/cpp_source_submodule/bite/src/ForeLogOrder.cpp
-    bite/cpp_source_submodule/bite/src/SimulationParameters.cpp
-    bite/cpp_source_submodule/bite/src/Util.cpp
-    bite/cpp_source_submodule/bite/src/MILPStats.cpp
-    bite/cpp_source_submodule/bite/src/BalancingOrder.cpp
+    bitepy/_bite.cpp
+    bitepy/cpp_source_submodule/bite/src/Simulation.cpp
+    bitepy/cpp_source_submodule/bite/src/GeneralStageProblem.cpp
+    bitepy/cpp_source_submodule/bite/src/LimitOrderQueue.cpp
+    bitepy/cpp_source_submodule/bite/src/LimitOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/MarketOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/LogLimitOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/ExecMarketOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/LogAcceptedOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/OrderBook.cpp
+    bitepy/cpp_source_submodule/bite/src/ForeLogOrder.cpp
+    bitepy/cpp_source_submodule/bite/src/SimulationParameters.cpp
+    bitepy/cpp_source_submodule/bite/src/Util.cpp
+    bitepy/cpp_source_submodule/bite/src/MILPStats.cpp
+    bitepy/cpp_source_submodule/bite/src/BalancingOrder.cpp
 )
 
 set_target_properties(_bite
@@ -110,7 +110,7 @@ set_target_properties(_bite
 
 # Then add them to your target:
 target_include_directories(_bite PRIVATE
-    "${PROJECT_SOURCE_DIR}/bite/cpp_source_submodule/bite/src"
+    "${PROJECT_SOURCE_DIR}/bitepy/cpp_source_submodule/bite/src"
     #"${GUROBI_INCLUDE_DIR}"
 )
 
@@ -155,7 +155,7 @@ endif()
 
 install(TARGETS _bite
         COMPONENT python
-        LIBRARY DESTINATION bite  # or '.'
+        LIBRARY DESTINATION bitepy  # or '.'
 )
 
 #######

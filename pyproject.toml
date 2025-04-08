@@ -61,13 +61,8 @@ cmake.version = ">=3.18"
 # ``<package>`` if they exist.  The prefix(s) will be stripped from the package
 # name inside the wheel. If a dict, provides a mapping of package name to source
 # directory.
-wheel.packages = {"bitepy" = "bite"}
+wheel.packages = ["bitepy"]
 
-# If your Python code is under a 'src' directory (e.g., ./src/bite),
-# scikit-build-core usually finds it automatically, or you can specify:
-# wheel.packages = ["src/bite"]
-# Choose the one that matches your project structure. If unsure, start without it
-# or use ["bite"] if the 'bite' folder is top-level.
 
 # Settings related to wheel building
 # wheel.py-api = "cp38" # Specifies the Python C-API version, e.g., cp38 for Python 3.8+

@@ -1,5 +1,5 @@
-bite/cpp_source_submodule/*
-!bite/cpp_source_submodule/.git
+bitepy/cpp_source_submodule/*
+!bitepy/cpp_source_submodule/.git
 
 dist/*
 
