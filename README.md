@@ -3,7 +3,7 @@
 ## _A Battery Intraday Trading Engine_
 
 
-<img src="docs/assets/bite_logo.png" width="30">
+<img src="docs/assets/bitepy_logo_text.png" width="30">
 
 [![Version](https://img.shields.io/github/v/tag/dschaurecker/bite?label=version&style=flat)](https://github.com/dschaurecker/bite/releases)
 
