@@ -1,0 +1,4 @@
+[submodule "fc-bite-private"]
+	path = bitepy/cpp_source_submodule
+	url = https://github.com/dschaurecker/fc-bite-private
+	branch = dev
