@@ -38,5 +38,5 @@ plugins:
   - mkdocstrings
   - exclude:
       glob:
-        - "bite/cpp-source-submodule/*"
-        - "bite/_bite.cpp"
+        - "bitepy/cpp-source-submodule/*"
+        - "bitepy/_bite.cpp"
