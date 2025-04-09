@@ -372,8 +372,8 @@ class Simulation:
         print("Solve Frequency:", self._sim_cpp.params.dpFreq, "min")
         print("Injection Maximum:", self._sim_cpp.params.injectMax, "MW")
         print("Withdrawal Maximum:", self._sim_cpp.params.withdrawMax, "MW")
-        print("Forecast Horizon Start:", self._sim_cpp.params.foreHorizonStart, "min")
-        print("Forecast Horizon End:", self._sim_cpp.params.foreHorizonEnd, "min")
+        # print("Forecast Horizon Start:", self._sim_cpp.params.foreHorizonStart, "min")
+        # print("Forecast Horizon End:", self._sim_cpp.params.foreHorizonEnd, "min")
     
     def return_vol_price_pairs(self, is_last: bool, frequency: int, volumes: np.ndarray):
         """
