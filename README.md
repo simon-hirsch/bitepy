@@ -7,8 +7,8 @@
 [![Version](https://img.shields.io/github/v/tag/dschaurecker/bitepy?label=version&style=flat)](https://github.com/dschaurecker/bitepy/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/bitepy)](https://pypi.org/project/bitepy/)
-[![Tests](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml)
-[![Docs](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml)
+<!-- [![Tests](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml) -->
+<!-- [![Docs](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml) -->
 
 
 
