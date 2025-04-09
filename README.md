@@ -1,10 +1,16 @@
 <p align="center" width="100%">
-<img src="docs/assets/bitepy_logo_text.png" width="300">
+<img src="https://raw.githubusercontent.com/dschaurecker/bitepy/main/docs/assets/bitepy_logo_text.png" width="300">
 </p>
 
 ## _A Battery Intraday Trading Engine_
 
 [![Version](https://img.shields.io/github/v/tag/dschaurecker/bitepy?label=version&style=flat)](https://github.com/dschaurecker/bitepy/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/bitepy)](https://pypi.org/project/bitepy/)
+[![Tests](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/release.yml)
+[![Docs](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/dschaurecker/bitepy/actions/workflows/gh-pages.yml)
+
+
 
 A Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper (tbd, Schaurecker & Wozabal et al. (2025)) for details on the method and visualizations of the results.
 
