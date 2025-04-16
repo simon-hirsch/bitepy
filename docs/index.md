@@ -15,7 +15,7 @@ This is a Python high-frequency intraday trading engine for simulating the rolli
 ## Installation
 
 BitePy requires Python 3.8+ to run.
-The package can be easily installed via
+The package is hosted on [PyPI](https://pypi.org/project/bitepy/) and can be easily installed via
 
 ```sh
 pip install bitepy
