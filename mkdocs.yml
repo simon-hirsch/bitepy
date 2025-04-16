@@ -1,6 +1,8 @@
 site_name: "BitePy - A Python Battery Intraday Trading Engine"
 site_url: "https://dschaurecker.github.io/bitepy/"
 
+site_description: "Documentation for BitePy: a Python high-frequency intraday trading engine for simulating battery strategies on the European market using dynamic programming."
+
 nav:
   - Home: index.md
   - Data Preprocessing: data.md
