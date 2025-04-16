@@ -35,6 +35,11 @@ theme:
   logo: "assets/bite_logo.png"
   favicon: "assets/bite_logo.png"
 
+extra:
+  analytics:
+    provider: google
+    property: G-20FJGP4HBS
+
 plugins:
   - search
   - mkdocstrings
