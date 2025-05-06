@@ -1,7 +1,7 @@
 <!-- docs/index.md -->
 # Welcome to the Battery Intraday Trading Engine Documentation!
 
-This is a Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper pre-print ([Arxiv](https://arxiv.org/abs/2504.06932)) for details on the method and visualizations of the results. The code is visible on [GitHub](https://github.com/dschaurecker/bitepy)
+This is a Python high-frequency intraday trading engine for simulating the rolling intrinsic strategy on the European market, solved as a dynamic program. See our paper pre-print ([Arxiv](https://arxiv.org/abs/2504.06932)) for details on the method and visualizations of the results. The code is published on [GitHub](https://github.com/dschaurecker/bitepy).
 
 ## Features
 
